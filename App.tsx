@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { User, CaseThread, Message } from './types';
-import { findOrCreateUser, createThread, updateThread } from './services/dbService';
-import { processUserTurn } from './services/geminiService';
+import { findOrCreateUser, createThread, updateThread, processUserTurn } from './services/apiService';
 import { useGoogleLogin, googleLogout } from './services/googleOAuth';
 import { LoginScreen } from './components/LoginScreen';
 import { Sidebar } from './components/Sidebar';
@@ -24,22 +23,27 @@ const App: React.FC = () => {
 
   const handleLoginSuccess = async (tokenResponse: { access_token: string }) => {
     setIsAuthenticating(true);
-    // In a real app, you'd fetch the user profile from Google using the access token.
-    // Here we'll simulate it and use the dbService to get/create the user.
-    const mockProfile = {
-      googleId: `mock-google-id-${Date.now()}`,
-      name: 'Demo User',
-      email: 'demo.user@example.com',
-      picture: `https://i.pravatar.cc/150?u=${Date.now()}`,
-    };
-    
-    const { user: dbUser, threads: userThreads } = await findOrCreateUser(mockProfile);
-    setUser(dbUser);
-    setThreads(userThreads);
-    if (userThreads.length > 0) {
-      setActiveThreadId(userThreads[0].id);
+    try {
+      // Mock profile - in production, fetch from Google API
+      const mockProfile = {
+        googleId: `mock-google-id-${Date.now()}`,
+        name: 'Demo User',
+        email: 'demo.user@example.com',
+        picture: `https://i.pravatar.cc/150?u=${Date.now()}`,
+      };
+      
+      const { user: dbUser, threads: userThreads } = await findOrCreateUser(mockProfile);
+      setUser(dbUser);
+      setThreads(userThreads);
+      if (userThreads.length > 0) {
+        setActiveThreadId(userThreads[0].id);
+      }
+    } catch (error) {
+      console.error('Failed to authenticate:', error);
+      alert('Authentication failed. Please try again.');
+    } finally {
+      setIsAuthenticating(false);
     }
-    setIsAuthenticating(false);
   };
   
   const login = useGoogleLogin({
@@ -58,19 +62,22 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    // This effect is just to remove the initial loading screen.
-    // In a real app, you might check for an existing session here.
     const timer = setTimeout(() => setIsAuthenticating(false), 500);
     return () => clearTimeout(timer);
   }, []);
 
   const handleCreateThread = async () => {
     if (!user) return;
-    const newThread = await createThread(user.id);
-    setThreads(prev => [newThread, ...prev]);
-    setActiveThreadId(newThread.id);
-    setIsSidebarOpen(false);
-    setMobileView('chat');
+    try {
+      const newThread = await createThread(user.id);
+      setThreads(prev => [newThread, ...prev]);
+      setActiveThreadId(newThread.id);
+      setIsSidebarOpen(false);
+      setMobileView('chat');
+    } catch (error) {
+      console.error('Failed to create thread:', error);
+      alert('Failed to create new case. Please try again.');
+    }
   };
 
   const handleSelectThread = (id: string) => {
@@ -96,6 +103,7 @@ const App: React.FC = () => {
     } catch (error) {
         console.error("Failed to update thread title:", error);
         setThreads(originalThreads);
+        alert('Failed to update title. Please try again.');
     }
   };
 
@@ -190,7 +198,6 @@ const App: React.FC = () => {
         <main className="flex-1 flex overflow-hidden">
           {activeThread ? (
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 h-full">
-              {/* Chat View */}
               <div className={`bg-white border-r border-slate-200 ${mobileView === 'chat' ? 'flex' : 'hidden'} lg:flex flex-col h-full`}>
                 <ChatView
                   thread={activeThread}
@@ -200,30 +207,27 @@ const App: React.FC = () => {
                 />
               </div>
               
-              {/* Right Pane (Summary and Mind Map) */}
-               <div className="hidden lg:flex flex-col h-full">
-                 <div className="flex-1 min-h-0 border-b border-slate-200">
-                    <SummaryView summary={activeThread.summary} isLoading={isLoading && activeThread.summary.includes('generated yet')} />
-                 </div>
-                 <div className="flex-1 min-h-0">
-                    <MindMapView mindMap={activeThread.mindMap} />
-                 </div>
+              <div className="hidden lg:flex flex-col h-full">
+                <div className="flex-1 min-h-0 border-b border-slate-200">
+                  <SummaryView summary={activeThread.summary} isLoading={isLoading && activeThread.summary.includes('generated yet')} />
+                </div>
+                <div className="flex-1 min-h-0">
+                  <MindMapView mindMap={activeThread.mindMap} />
+                </div>
               </div>
 
-              {/* Mobile Summary View */}
               <div className={`bg-white ${mobileView === 'summary' ? 'block' : 'hidden'} lg:hidden h-full`}>
-                 <SummaryView summary={activeThread.summary} isLoading={isLoading && activeThread.summary.includes('generated yet')} />
+                <SummaryView summary={activeThread.summary} isLoading={isLoading && activeThread.summary.includes('generated yet')} />
               </div>
 
-              {/* Mobile Mind Map View */}
               <div className={`bg-white ${mobileView === 'mindmap' ? 'block' : 'hidden'} lg:hidden h-full`}>
                 <MindMapView mindMap={activeThread.mindMap} />
               </div>
             </div>
           ) : (
-             <div className="flex-1 flex items-center justify-center">
-                <WelcomeScreen />
-             </div>
+            <div className="flex-1 flex items-center justify-center">
+              <WelcomeScreen />
+            </div>
           )}
         </main>
       </div>
