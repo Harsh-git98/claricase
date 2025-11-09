@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { GoogleGenAI, Type } from '@google/genai';
+import { MongoClient } from 'mongodb';
 
 dotenv.config();
 
@@ -22,6 +23,34 @@ if (!API_KEY) {
 }
 
 const ai = new GoogleGenAI({ apiKey: API_KEY });
+
+
+// MongoDB setup
+const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
+if (!MONGODB_URI) {
+  console.warn('MONGODB_URI not set - falling back to in-memory DB. Set MONGODB_URI to enable persistence.');
+}
+
+let db = null;
+let usersCol = null;
+let threadsCol = null;
+
+const connectMongo = async () => {
+  if (!MONGODB_URI) return null;
+  const client = new MongoClient(MONGODB_URI);
+  await client.connect();
+  db = client.db(process.env.MONGODB_DBNAME || 'lexora');
+  usersCol = db.collection('users');
+  threadsCol = db.collection('threads');
+  // Ensure indexes
+  await usersCol.createIndex({ email: 1 }, { unique: true });
+  await threadsCol.createIndex({ userId: 1 });
+  console.log('Connected to MongoDB');
+};
+
+connectMongo().catch(err => {
+  console.error('MongoDB connection error:', err);
+});
 
 // Response schema for Gemini
 const responseSchema = {
@@ -180,18 +209,127 @@ const uuid = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => 
   return v.toString(16);
 });
 
-// Get or create user
+// --- Simple Affine Cipher (not secure, demo only) ---
+const AFFINE_A = 5; // must be coprime with MOD
+const AFFINE_B = 8;
+const MOD = 65536; // operate on 16-bit code units
+
+const egcd = (a, b) => {
+  if (b === 0) return { g: a, x: 1, y: 0 };
+  const res = egcd(b, a % b);
+  return { g: res.g, x: res.y, y: res.x - Math.floor(a / b) * res.y };
+};
+
+const modInverse = (a, m) => {
+  const res = egcd(a, m);
+  if (res.g !== 1) throw new Error('No modular inverse');
+  return ((res.x % m) + m) % m;
+};
+
+const AFFINE_A_INV = (() => {
+  try { return modInverse(AFFINE_A, MOD); } catch (e) { return 1; }
+})();
+
+const affineEncrypt = (text) => {
+  if (text == null) return text;
+  let out = '';
+  for (let i = 0; i < text.length; i++) {
+    const code = text.charCodeAt(i);
+    const enc = (AFFINE_A * code + AFFINE_B) % MOD;
+    out += String.fromCharCode(enc);
+  }
+  return out;
+};
+
+const affineDecrypt = (text) => {
+  if (text == null) return text;
+  let out = '';
+  for (let i = 0; i < text.length; i++) {
+    const code = text.charCodeAt(i);
+    const dec = (AFFINE_A_INV * ((code - AFFINE_B + MOD) % MOD)) % MOD;
+    out += String.fromCharCode(dec);
+  }
+  return out;
+};
+
+const encryptThreadForSave = (thread) => {
+  const t = JSON.parse(JSON.stringify(thread));
+  if (Array.isArray(t.messages)) {
+    t.messages = t.messages.map(m => ({ ...m, content: typeof m.content === 'string' ? affineEncrypt(m.content) : m.content }));
+  }
+  if (typeof t.summary === 'string') t.summary = affineEncrypt(t.summary);
+  if (t.mindMap && Array.isArray(t.mindMap.nodes)) {
+    t.mindMap.nodes = t.mindMap.nodes.map(n => ({ ...n, label: typeof n.label === 'string' ? affineEncrypt(n.label) : n.label }));
+  }
+  if (t.mindMap && Array.isArray(t.mindMap.edges)) {
+    t.mindMap.edges = t.mindMap.edges.map(e => ({ ...e, label: typeof e.label === 'string' ? affineEncrypt(e.label) : e.label }));
+  }
+  return t;
+};
+
+const decryptThreadFromDb = (thread) => {
+  if (!thread) return thread;
+  const t = JSON.parse(JSON.stringify(thread));
+  if (Array.isArray(t.messages)) {
+    t.messages = t.messages.map(m => ({ ...m, content: typeof m.content === 'string' ? affineDecrypt(m.content) : m.content }));
+  }
+  if (typeof t.summary === 'string') t.summary = affineDecrypt(t.summary);
+  if (t.mindMap && Array.isArray(t.mindMap.nodes)) {
+    t.mindMap.nodes = t.mindMap.nodes.map(n => ({ ...n, label: typeof n.label === 'string' ? affineDecrypt(n.label) : n.label }));
+  }
+  if (t.mindMap && Array.isArray(t.mindMap.edges)) {
+    t.mindMap.edges = t.mindMap.edges.map(e => ({ ...e, label: typeof e.label === 'string' ? affineDecrypt(e.label) : e.label }));
+  }
+  return t;
+};
+
+// Get or create user (lookup by email - email is primary identifier)
 app.post('/api/users/find-or-create', async (req, res) => {
   try {
     const { googleId, name, email, picture } = req.body;
-    
-    let user = database.users.find(u => u.googleId === googleId);
-    
+    if (!email) return res.status(400).json({ error: 'email is required' });
+
+    // Prefer MongoDB when available
+    if (usersCol) {
+      let user = await usersCol.findOne({ email });
+      if (!user) {
+        user = {
+          id: email, // use email as primary id
+          googleId: googleId || null,
+          name,
+          email,
+          picture,
+          createdAt: new Date().toISOString(),
+        };
+        await usersCol.insertOne(user);
+
+        const firstThread = {
+          id: uuid(),
+          userId: user.id,
+          title: 'My First Case',
+          messages: [{
+            role: 'assistant',
+            content: 'Welcome to Lexora! How can I assist you with your case today? You can start by describing the situation or uploading a relevant document.',
+            timestamp: new Date().toISOString(),
+          }],
+          summary: 'No summary has been generated yet.',
+          mindMap: { nodes: [], edges: [] },
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        await threadsCol.insertOne(encryptThreadForSave(firstThread));
+      }
+
+      const rawThreads = await threadsCol.find({ userId: email }).sort({ createdAt: -1 }).toArray();
+      const userThreads = rawThreads.map(decryptThreadFromDb);
+      return res.json({ user, threads: userThreads });
+    }
+
+    // Fallback to in-memory demo DB
+    let user = database.users.find(u => u.email === email);
     if (!user) {
-      user = { id: googleId, googleId, name, email, picture };
+      user = { id: email, googleId: googleId || null, name, email, picture };
       database.users.push(user);
-      
-      // Create first thread for new user
       const firstThread = {
         id: uuid(),
         userId: user.id,
@@ -208,11 +346,11 @@ app.post('/api/users/find-or-create', async (req, res) => {
       };
       database.threads.push(firstThread);
     }
-    
+
     const userThreads = database.threads
       .filter(t => t.userId === user.id)
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    
+
     res.json({ user, threads: userThreads });
   } catch (error) {
     console.error("Error finding/creating user:", error);
@@ -224,13 +362,32 @@ app.post('/api/users/find-or-create', async (req, res) => {
 app.post('/api/threads', async (req, res) => {
   try {
     const { userId } = req.body;
-    
+
     if (!userId) {
       return res.status(400).json({ error: 'userId is required' });
     }
-    
+
+    if (threadsCol) {
+      const userThreadCount = await threadsCol.countDocuments({ userId });
+      const newThread = {
+        id: uuid(),
+        userId,
+        title: `Case #${userThreadCount + 1}`,
+        messages: [{
+          role: 'assistant',
+          content: 'This is a new case thread. What information can you provide to get started?',
+          timestamp: new Date().toISOString(),
+        }],
+        summary: 'No summary has been generated yet.',
+        mindMap: { nodes: [], edges: [] },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      await threadsCol.insertOne(encryptThreadForSave(newThread));
+      return res.json(newThread);
+    }
+
     const userThreadCount = database.threads.filter(t => t.userId === userId).length;
-    
     const newThread = {
       id: uuid(),
       userId,
@@ -245,7 +402,7 @@ app.post('/api/threads', async (req, res) => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    
+
     database.threads.push(newThread);
     res.json(newThread);
   } catch (error) {
@@ -259,19 +416,29 @@ app.patch('/api/threads/:threadId', async (req, res) => {
   try {
     const { threadId } = req.params;
     const updatedData = req.body;
-    
+
+    if (threadsCol) {
+      const existing = await threadsCol.findOne({ id: threadId });
+      if (!existing) return res.status(404).json({ error: 'Thread not found' });
+      // Decrypt existing, merge with incoming plain updatedData, then encrypt for save
+      const decryptedExisting = decryptThreadFromDb(existing);
+      const mergedPlain = { ...decryptedExisting, ...updatedData, updatedAt: new Date().toISOString() };
+      const toSave = encryptThreadForSave(mergedPlain);
+      // preserve _id when replacing
+      if (existing._id) toSave._id = existing._id;
+      await threadsCol.replaceOne({ id: threadId }, toSave);
+      return res.json(mergedPlain);
+    }
+
     const threadIndex = database.threads.findIndex(t => t.id === threadId);
-    
     if (threadIndex === -1) {
       return res.status(404).json({ error: 'Thread not found' });
     }
-    
     database.threads[threadIndex] = {
       ...database.threads[threadIndex],
       ...updatedData,
       updatedAt: new Date().toISOString()
     };
-    
     res.json(database.threads[threadIndex]);
   } catch (error) {
     console.error("Error updating thread:", error);
@@ -283,11 +450,17 @@ app.patch('/api/threads/:threadId', async (req, res) => {
 app.get('/api/users/:userId/threads', async (req, res) => {
   try {
     const { userId } = req.params;
-    
+
+    if (threadsCol) {
+      const rawThreads = await threadsCol.find({ userId }).sort({ createdAt: -1 }).toArray();
+      const userThreads = rawThreads.map(decryptThreadFromDb);
+      return res.json(userThreads);
+    }
+
     const userThreads = database.threads
       .filter(t => t.userId === userId)
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    
+
     res.json(userThreads);
   } catch (error) {
     console.error("Error fetching threads:", error);
