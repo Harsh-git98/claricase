@@ -1,0 +1,7 @@
+{
+  "name": "Lexora — AI Legal Assistant",
+  "description": "An AI-powered legal assistant platform for U.S. users that helps analyze, summarize, and visualize civil legal cases using Gemini.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
