@@ -20,11 +20,11 @@ const App: React.FC = () => {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [mobileView, setMobileView] = useState<MobileView>('chat');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleLoginSuccess = async (tokenResponse: { access_token: string }) => {
     setIsAuthenticating(true);
     try {
-      // Mock profile - in production, fetch from Google API
       const mockProfile = {
         googleId: `mock-google-id-${Date.now()}`,
         name: 'Demo User',
@@ -40,7 +40,7 @@ const App: React.FC = () => {
       }
     } catch (error) {
       console.error('Failed to authenticate:', error);
-      alert('Authentication failed. Please try again.');
+      setErrorMessage('Authentication failed. Please try again.');
     } finally {
       setIsAuthenticating(false);
     }
@@ -51,6 +51,7 @@ const App: React.FC = () => {
     onError: () => {
       console.error('Login Failed');
       setIsAuthenticating(false);
+      setErrorMessage('Login failed. Please try again.');
     }
   });
 
@@ -66,6 +67,14 @@ const App: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Clear error messages after 5 seconds
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => setErrorMessage(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
   const handleCreateThread = async () => {
     if (!user) return;
     try {
@@ -76,7 +85,7 @@ const App: React.FC = () => {
       setMobileView('chat');
     } catch (error) {
       console.error('Failed to create thread:', error);
-      alert('Failed to create new case. Please try again.');
+      setErrorMessage('Failed to create new case. Please try again.');
     }
   };
 
@@ -95,26 +104,36 @@ const App: React.FC = () => {
 
     const originalThreads = threads;
     setThreads(prevThreads => 
-        prevThreads.map(t => t.id === threadId ? { ...t, title: newTitle.trim() } : t)
+      prevThreads.map(t => t.id === threadId ? { ...t, title: newTitle.trim() } : t)
     );
 
     try {
-        await updateThread(threadId, { title: newTitle.trim() });
+      await updateThread(threadId, { title: newTitle.trim() });
     } catch (error) {
-        console.error("Failed to update thread title:", error);
-        setThreads(originalThreads);
-        alert('Failed to update title. Please try again.');
+      console.error("Failed to update thread title:", error);
+      setThreads(originalThreads);
+      setErrorMessage('Failed to update title. Please try again.');
     }
   };
 
   const handleSendMessage = async (userInput: string, imageBase64: string | null, isThinkingMode: boolean) => {
-    if (!activeThread) return;
+    if (!activeThread || !activeThreadId) return;
 
+    // Validate input
+    if (!userInput.trim()) {
+      setErrorMessage("Message cannot be empty");
+      return;
+    }
+
+    // Clear any previous errors
+    setErrorMessage(null);
+
+    // Create user message - don't store base64 image, just a flag
     const userMessage: Message = {
       role: 'user',
-      content: userInput,
+      content: userInput.trim(),
       timestamp: new Date().toISOString(),
-      ...(imageBase64 && { image: `data:image/jpeg;base64,${imageBase64}` })
+      hasImage: !!imageBase64, // Just a flag to show image icon
     };
     
     const updatedMessages = [...activeThread.messages, userMessage];
@@ -126,9 +145,10 @@ const App: React.FC = () => {
     setIsLoading(true);
 
     try {
+      // Send the actual image to the API
       const geminiResponse = await processUserTurn(
         updatedMessages,
-        userInput,
+        userInput.trim(),
         imageBase64,
         isThinkingMode
       );
@@ -151,11 +171,29 @@ const App: React.FC = () => {
 
     } catch (error) {
       console.error("Failed to send message:", error);
+      
+      // More specific error messages
+      let errorText = "Sorry, I encountered an error. Please try again.";
+      if (error instanceof Error) {
+        if (error.message.includes('too large') || error.message.includes('payload') || error.message.includes('413')) {
+          errorText = "The request is too large. Try starting a new case or using a smaller image.";
+        } else if (error.message.includes('timeout')) {
+          errorText = "The request timed out. Please try again or use a shorter message.";
+        } else if (error.message.includes('compress') || error.message.includes('image')) {
+          errorText = error.message;
+        } else {
+          errorText = error.message;
+        }
+      }
+      
+      setErrorMessage(errorText);
+      
       const errorMessage: Message = {
         role: 'assistant',
-        content: "Sorry, I encountered an error. Please try again.",
+        content: errorText,
         timestamp: new Date().toISOString(),
       };
+      
       const revertedThread = { ...updatedThread, messages: [...updatedMessages, errorMessage]};
       setThreads(threads.map(t => t.id === activeThreadId ? revertedThread : t));
     } finally {
@@ -177,6 +215,26 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-slate-50 font-sans">
+      {/* Error Toast */}
+      {errorMessage && (
+        <div className="fixed top-4 right-4 z-50 max-w-md animate-slide-in">
+          <div className="bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3">
+            <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+            <p className="text-sm font-medium">{errorMessage}</p>
+            <button 
+              onClick={() => setErrorMessage(null)}
+              className="ml-auto flex-shrink-0 text-white hover:text-red-100"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
       <Sidebar
         user={user}
         threads={threads}
@@ -188,6 +246,7 @@ const App: React.FC = () => {
         setIsOpen={setIsSidebarOpen}
         onUpdateThreadTitle={handleUpdateThreadTitle}
       />
+      
       <div className="flex-1 flex flex-col min-w-0">
         <MobileHeader 
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -195,10 +254,12 @@ const App: React.FC = () => {
           setActiveView={setMobileView}
           hasActiveThread={!!activeThread}
         />
-        <main className="flex-1 flex overflow-hidden">
+        
+        <main className="flex-1 flex overflow-hidden min-h-0">
           {activeThread ? (
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 h-full">
-              <div className={`bg-white border-r border-slate-200 ${mobileView === 'chat' ? 'flex' : 'hidden'} lg:flex flex-col h-full`}>
+              {/* Chat View */}
+              <div className={`bg-white border-r border-slate-200 ${mobileView === 'chat' ? 'flex' : 'hidden'} lg:flex flex-col h-full min-h-0`}>
                 <ChatView
                   thread={activeThread}
                   onSendMessage={handleSendMessage}
@@ -207,20 +268,29 @@ const App: React.FC = () => {
                 />
               </div>
               
+              {/* Desktop: Summary and MindMap split */}
               <div className="hidden lg:flex flex-col h-full">
-                <div className="flex-1 min-h-0 border-b border-slate-200">
-                  <SummaryView summary={activeThread.summary} isLoading={isLoading && activeThread.summary.includes('generated yet')} />
+                <div className="flex-1 min-h-0 border-b border-slate-200 overflow-y-auto">
+                  <SummaryView 
+                    summary={activeThread.summary} 
+                    isLoading={isLoading && activeThread.summary.includes('generated yet')} 
+                  />
                 </div>
-                <div className="flex-1 min-h-0">
+                <div className="flex-1 min-h-0 overflow-y-auto">
                   <MindMapView mindMap={activeThread.mindMap} />
                 </div>
               </div>
 
-              <div className={`bg-white ${mobileView === 'summary' ? 'block' : 'hidden'} lg:hidden h-full`}>
-                <SummaryView summary={activeThread.summary} isLoading={isLoading && activeThread.summary.includes('generated yet')} />
+              {/* Mobile: Summary View */}
+              <div className={`bg-white ${mobileView === 'summary' ? 'block' : 'hidden'} lg:hidden h-full overflow-y-auto`}>
+                <SummaryView 
+                  summary={activeThread.summary} 
+                  isLoading={isLoading && activeThread.summary.includes('generated yet')} 
+                />
               </div>
 
-              <div className={`bg-white ${mobileView === 'mindmap' ? 'block' : 'hidden'} lg:hidden h-full`}>
+              {/* Mobile: MindMap View */}
+              <div className={`bg-white ${mobileView === 'mindmap' ? 'block' : 'hidden'} lg:hidden h-full overflow-y-auto`}>
                 <MindMapView mindMap={activeThread.mindMap} />
               </div>
             </div>

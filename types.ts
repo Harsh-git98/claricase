@@ -9,9 +9,11 @@ export interface User {
 export interface Message {
   role: 'user' | 'assistant';
   content: string;
-  image?: string; // URL of the image for display
   timestamp: string;
+  hasImage?: boolean; // Flag to indicate image was attached (don't store actual image)
 }
+
+// ... rest of your types remain the same
 
 export interface MindMapNode {
   id: string;
