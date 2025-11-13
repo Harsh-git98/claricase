@@ -5,6 +5,7 @@ import { PlusIcon } from './icons/PlusIcon';
 import { LogoutIcon } from './icons/LogoutIcon';
 import { XIcon } from './icons/XIcon';
 import { PencilIcon } from './icons/PencilIcon';
+import { AccountPopup } from './AccountPopup';
 
 interface SidebarProps {
   user: User;
@@ -32,6 +33,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [editingThreadId, setEditingThreadId] = useState<string | null>(null);
   const [titleInputValue, setTitleInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isAccountPopupOpen, setIsAccountPopupOpen] = useState(false);
+
 
   useEffect(() => {
     if (editingThreadId && inputRef.current) {
@@ -157,7 +160,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 alt={user.name}
                 className="w-10 h-10 rounded-full"
               />
-              <div className="min-w-0">
+              <div className="min-w-0 cursor-pointer"  onClick={() => setIsAccountPopupOpen(true)}>
                 <p className="font-semibold text-sm text-gray-800 truncate">
                   {user.name}
                 </p>
@@ -174,6 +177,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
       </aside>
-    </>
+   
+    {isAccountPopupOpen && (
+  <AccountPopup
+    user={user}
+    onClose={() => setIsAccountPopupOpen(false)}
+  />
+)}
+    </> 
   );
 };
