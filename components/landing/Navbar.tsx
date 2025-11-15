@@ -18,7 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onLogin }) => {
                     <div className="flex-shrink-0">
                          <a href="#" className="flex items-center space-x-2">
                             <LogoIcon className="w-8 h-8 text-purple-600" />
-                            <span className="text-xl font-bold text-gray-800">Lexora</span>
+                            <span className="text-xl font-bold text-gray-800">ClariCase</span>
                         </a>
                     </div>
                     <div className="hidden md:flex items-center space-x-8">

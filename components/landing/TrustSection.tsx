@@ -1,4 +1,6 @@
 import React from 'react';
+import { motion } from 'framer-motion';
+import { section } from 'framer-motion/m';
 
 const trustFeatures = [
   {
@@ -57,57 +59,134 @@ const trustFeatures = [
   }
 ];
 
+
+
+// Animation variants
+const container = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.15, delayChildren: 0.2 },
+  },
+};
+
+const card = {
+  hidden: { opacity: 0, y: 50, scale: 0.9, rotateX: -15 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    rotateX: 0,
+    transition: {
+      duration: 0.8,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
 export const TrustSection: React.FC = () => {
   return (
-    <section className="py-20 lg:py-28 bg-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 mb-6">
-            <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <section className="relative py-24 lg:py-32 overflow-hidden bg-white">
+      {/* Massive animated gradient blob */}
+      <motion.div
+        aria-hidden
+        className="absolute -top-40 left-1/2 -translate-x-1/2 w-[1400px] h-[900px] rounded-full blur-3xl opacity-30 bg-gradient-to-br from-purple-400 to-purple-700"
+        animate={{ rotate: [0, 180, 360] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+      />
+
+      {/* Soft grid overlay */}
+      <div className="absolute inset-0 opacity-[0.07] pointer-events-none bg-[repeating-linear-gradient(0deg,#0000000a_0px,#0000000a_14px,transparent_14px,transparent_15px)]" />
+
+      <div className="relative container mx-auto px-6 lg:px-12">
+        {/* Heading with heavy animation */}
+        <motion.div
+          initial={{ opacity: 0, y: 40, scale: 0.95 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.2 }}   // 👈 triggers only when visible
+          className="text-center mb-20"
+        >
+          <motion.div
+            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-100 mb-6 shadow-lg"
+            initial={{ scale: 0, rotate: -90 }}
+            whileInView={{ scale: 1, rotate: 0 }}
+            transition={{ type: 'spring', stiffness: 120, damping: 15 }}
+          >
+            <svg className="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
-          </div>
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+          </motion.div>
+
+          <h2 className="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4">
             Your Privacy & Security Matter
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             We understand the sensitive nature of legal matters. That's why security and privacy are at the core of everything we do.
           </p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {trustFeatures.map((feature, index) => (
-            <div 
-              key={index}
-              className="p-6 rounded-xl bg-slate-50 hover:bg-white hover:shadow-lg transition-all duration-300 border border-slate-200 group"
+        </motion.div>
+
+        {/* Grid with heavy entry animations */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-20"
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          {trustFeatures.map((feature, i) => (
+            <motion.div
+              key={i}
+              variants={card}
+              whileHover={{ y: -10, scale: 1.03, rotateX: 2 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 18 }}
+              className="p-8 rounded-xl bg-slate-50 hover:bg-white border border-slate-200 shadow-md hover:shadow-xl backdrop-blur-sm"
             >
-              <div className="text-purple-600 mb-4 group-hover:scale-110 transition-transform duration-300">
-                {feature.icon}
+              <div className="text-purple-600 mb-6 transform-gpu">
+                <motion.div
+                  initial={{ scale: 0, rotate: -45 }}
+                  whileInView={{ scale: 1, rotate: 0 }}
+                  transition={{ duration: 0.6, ease: 'easeOut' }}
+                >
+                  {feature.icon}
+                </motion.div>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
               <p className="text-gray-600 leading-relaxed">{feature.description}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
-        <div className="bg-gradient-to-br from-slate-50 to-purple-50 rounded-2xl p-8 lg:p-12 border border-purple-100">
+        {/* Disclaimer block with entry zoom */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 30 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          viewport={{ once: true }}
+          className="bg-gradient-to-br from-slate-50 to-purple-50 rounded-2xl p-10 lg:p-14 border border-purple-100 shadow-lg"
+        >
           <div className="max-w-3xl mx-auto text-center">
-            <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">
               Not Legal Advice
             </h3>
-            <p className="text-gray-700 leading-relaxed">
-              Lexora is an AI-powered tool designed to help you <span className="font-semibold text-purple-600">understand and organize</span> information about your civil case. 
-              While we provide insights and analysis, <span className="font-semibold">Lexora does not provide legal advice</span>. 
-              For legal counsel specific to your situation, please consult with a qualified attorney in your jurisdiction.
+            <p className="text-gray-700 leading-relaxed text-lg">
+              ClariCase is an AI-powered tool designed to help you <span className="font-semibold text-purple-600">understand and organize</span> information
+              about your civil case. While we provide insights and analysis,
+              <span className="font-semibold"> ClariCase does not provide legal advice</span>. Please consult a qualified attorney.
             </p>
-            <div className="mt-6 flex justify-center space-x-6 text-sm text-gray-600">
-              <a href="#" className="hover:text-purple-600 transition-colors underline">Privacy Policy</a>
-              <a href="#" className="hover:text-purple-600 transition-colors underline">Terms of Service</a>
-              <a href="#" className="hover:text-purple-600 transition-colors underline">Security Practices</a>
-            </div>
+
+            <motion.div
+              className="mt-8 flex justify-center space-x-8 text-sm text-gray-600"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              <a className="hover:text-purple-600 underline">Privacy Policy</a>
+              <a className="hover:text-purple-600 underline">Terms of Service</a>
+              <a className="hover:text-purple-600 underline">Security Practices</a>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
-};
+}

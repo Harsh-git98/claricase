@@ -1,67 +1,259 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
 const useCases = [
   {
-    title: "Contract Disputes",
-    description: "Navigate breach of contract cases with confidence. Understand your obligations, identify violations, and explore your options.",
-    icon: "📄",
-    benefits: ["Identify key clauses", "Understand breaches", "Assess damages"]
+    id: 'contract',
+    title: 'Contract Disputes',
+    description:
+      "Navigate breach of contract cases with confidence. Understand your obligations, identify violations, and explore your options.",
+    icon: '📄',
+    benefits: ['Identify key clauses', 'Understand breaches', 'Assess damages'],
+    details:
+      'Upload your contract and let ClariCase highlight risky clauses, suggest remediation steps, and produce a concise summary you can use in negotiation or court.'
   },
   {
-    title: "Property & Landlord Issues",
-    description: "Resolve tenant disputes, property damage claims, and lease violations with clear, actionable insights.",
-    icon: "🏠",
-    benefits: ["Lease analysis", "Damage assessment", "Rights clarification"]
+    id: 'property',
+    title: 'Property & Landlord Issues',
+    description:
+      "Resolve tenant disputes, property damage claims, and lease violations with clear, actionable insights.",
+    icon: '🏠',
+    benefits: ['Lease analysis', 'Damage assessment', 'Rights clarification'],
+    details:
+      'Extract timelines, notice requirements, and likely remedies. Generate a printable summary and a landlord/tenant timeline for hearings.'
   },
   {
-    title: "Small Claims Court",
-    description: "Prepare for small claims with organized evidence, clear timelines, and winning arguments.",
-    icon: "⚖️",
-    benefits: ["Evidence organization", "Timeline creation", "Argument building"]
+    id: 'smallclaims',
+    title: 'Small Claims Court',
+    description:
+      "Prepare for small claims with organized evidence, clear timelines, and winning arguments.",
+    icon: '⚖️',
+    benefits: ['Evidence organization', 'Timeline creation', 'Argument building'],
+    details:
+      "We help you prioritize evidence, build a tight timeline, and draft short, persuasive statements for the bench." 
   },
   {
-    title: "Employment Disputes",
-    description: "Understand wrongful termination, discrimination claims, and wage disputes with comprehensive analysis.",
-    icon: "💼",
-    benefits: ["Rights analysis", "Documentation review", "Next steps guidance"]
+    id: 'employment',
+    title: 'Employment Disputes',
+    description:
+      "Understand wrongful termination, discrimination claims, and wage disputes with comprehensive analysis.",
+    icon: '💼',
+    benefits: ['Rights analysis', 'Documentation review', 'Next steps guidance'],
+    details:
+      'Automatically detect contract terms, company policies referenced in your documents, and generate a clear action checklist.'
   }
 ];
 
+const containerVariants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 24, scale: 0.98 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.2, 0.9, 0.2, 1] } },
+};
+
 export const UseCasesSection: React.FC = () => {
+  const [active, setActive] = useState<string | null>(null);
+  const prefersReduced = useReducedMotion();
+
+  useEffect(() => {
+    document.body.style.overflow = active ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [active]);
+
   return (
-    <section className="py-20 lg:py-28 bg-slate-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">Clarity for Every Civil Case</h2>
-          <p className="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">
-            Whether you're facing a contract dispute or a property issue, Lexora provides the insights you need.
-          </p>
+    <section className="relative py-20 lg:py-28 bg-gradient-to-b from-white to-slate-50 overflow-hidden">
+      {/* decorative rotating gradient */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full blur-3xl opacity-30"
+        style={{ background: 'linear-gradient(135deg,#7c3aed,#60a5fa)' }}
+      />
+
+      <div className="relative container mx-auto px-6 lg:px-12">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-900">Clarity for Every Civil Case</h2>
+          <p className="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">Whether you're facing a contract dispute or a property issue, ClariCase provides the insights you need.</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {useCases.map((useCase, index) => (
-            <div 
-              key={index}
-              className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group hover:-translate-y-1"
+
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          {useCases.map((u, i) => (
+            <motion.button
+              key={u.id}
+              onClick={() => setActive(u.id)}
+              className="relative text-left bg-white p-6 rounded-2xl shadow-lg border border-transparent hover:shadow-2xl transition-transform duration-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-purple-200"
+              variants={cardVariants}
+              whileHover={{ y: -6, scale: 1.01 }}
+              whileTap={{ scale: 0.995 }}
+              aria-haspopup="dialog"
+              aria-expanded={active === u.id}
             >
-              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                {useCase.icon}
+              {/* floating emoji badge */}
+              {/* <div className="absolute -top-6 left-6 w-14 h-14 rounded-full bg-gradient-to-br from-purple-600 to-purple-400 text-white flex items-center justify-center text-2xl shadow-md">
+                <span aria-hidden>{u.icon}</span>
+              </div> */}
+
+              <div className="ml-8">
+                <h3 className="text-2xl font-semibold text-gray-900">{u.title}</h3>
+                <p className="mt-2 text-gray-600">{u.description}</p>
+
+                <ul className="mt-4 flex flex-wrap gap-3">
+                  {u.benefits.map((b, idx) => (
+                    <li key={idx} className="inline-flex items-center bg-purple-50 text-purple-700 text-sm px-3 py-1 rounded-full shadow-sm">
+                      <svg className="w-4 h-4 mr-2" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-6">
+                  <span className="inline-flex items-center text-sm font-medium text-purple-600 hover:underline">Explore details →</span>
+                </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">{useCase.title}</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">{useCase.description}</p>
-              <ul className="space-y-2">
-                {useCase.benefits.map((benefit, i) => (
-                  <li key={i} className="flex items-center text-gray-700">
-                    <svg className="w-5 h-5 text-purple-600 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
-            </div>
+
+              {/* corner decorative */}
+              <div className="absolute -right-6 bottom-6 w-28 h-28 rounded-full opacity-10" style={{ background: 'radial-gradient(circle,#7c3aed,transparent 40%)' }} />
+            </motion.button>
           ))}
-        </div>
+        </motion.div>
+
+        {/* Modal / heavy popup */}
+        <AnimatePresence>
+          {active && (
+            <Modal onClose={() => setActive(null)}>
+              <ModalContent useCase={useCases.find((x) => x.id === active)!} prefersReduced={prefersReduced} />
+            </Modal>
+          )}
+        </AnimatePresence>
       </div>
+
+      <style>{`
+        @media (prefers-reduced-motion: reduce) {
+          .motion-safe\:animate-fade { animation: none; }
+        }
+      `}</style>
     </section>
   );
-};
+}
+
+function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose();
+    }
+    document.addEventListener('keydown', onKey);
+    const prev = document.activeElement as HTMLElement | null;
+    // focus close button on open
+    setTimeout(() => closeButtonRef.current?.focus(), 50);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      prev?.focus();
+    };
+  }, [onClose]);
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      aria-modal="true"
+      role="dialog"
+    >
+      {/* backdrop */}
+      <motion.div
+        ref={overlayRef}
+        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      />
+
+      <motion.div
+        className="relative z-10 max-w-3xl w-full bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden"
+        initial={{ opacity: 0, y: 30, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.45 } }}
+        exit={{ opacity: 0, y: 20, scale: 0.98, transition: { duration: 0.25 } }}
+      >
+        <div className="p-6 sm:p-8">
+          <div className="flex items-start justify-between">
+            <div />
+            <button
+              ref={closeButtonRef}
+              onClick={onClose}
+              className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-gray-500 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-300"
+              aria-label="Close"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </div>
+
+          {children}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function ModalContent({ useCase, prefersReduced }: { useCase: (typeof useCases)[0]; prefersReduced: boolean }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-600 to-purple-400 text-white flex items-center justify-center text-3xl shadow-md">{useCase.icon}</div>
+        <h3 className="mt-6 text-2xl font-bold text-gray-900">{useCase.title}</h3>
+        <p className="mt-3 text-gray-600">{useCase.details}</p>
+
+        <ul className="mt-6 space-y-3">
+          {useCase.benefits.map((b, i) => (
+            <li key={i} className="flex items-start gap-3">
+              <div className="mt-1 w-6 h-6 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center text-sm">✓</div>
+              <div className="text-gray-700">{b}</div>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-6 flex items-center gap-4">
+          <button className="inline-flex items-center px-5 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition">Start this use case</button>
+          <button className="text-sm text-gray-600 underline">See example report</button>
+        </div>
+      </div>
+
+      <div className="bg-slate-50 rounded-xl p-4">
+        <h4 className="text-sm font-semibold text-gray-700">Live preview</h4>
+        <div className="mt-3 border border-slate-100 rounded-lg bg-white p-4 shadow-sm">
+          <p className="text-sm text-gray-600">This preview simulates how we transform your documents into a concise summary, highlight risky clauses, and suggest important dates to track for hearings.</p>
+
+          <div className="mt-4 space-y-3">
+            <div className="p-3 rounded-md bg-gradient-to-r from-purple-50 to-white border-l-4 border-purple-300">
+              <div className="text-xs text-purple-700 font-medium">Key Clause</div>
+              <div className="text-sm text-gray-800 mt-1">"Payment due within 30 days" — flagged because it conflicts with the later amendment.</div>
+            </div>
+
+            <div className="p-3 rounded-md bg-gradient-to-r from-purple-50 to-white border-l-4 border-purple-300">
+              <div className="text-xs text-purple-700 font-medium">Suggested Next Step</div>
+              <div className="text-sm text-gray-800 mt-1">Send a written notice citing clause 4.2 and request remediation within 14 days.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
