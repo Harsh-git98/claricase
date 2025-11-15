@@ -89,7 +89,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="flex items-center justify-between p-4 border-b border-slate-200">
           <div className="flex items-center space-x-2">
             <LogoIcon className="w-8 h-8 text-purple-600" />
-            <span className="text-xl font-bold text-gray-800">Lexora</span>
+            <span className="text-xl font-bold text-gray-800">ClariCase</span>
           </div>
           <button
             onClick={() => setIsOpen(false)}

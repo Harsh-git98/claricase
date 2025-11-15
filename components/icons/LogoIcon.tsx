@@ -1,20 +1,32 @@
+import React from "react";
 
-import React from 'react';
+export const LogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+  const { width = 120, height = 120, ...rest } = props;
 
-export const LogoIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-  <svg
-    {...props}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M12 22V2" />
-    <path d="M5 12H2a10 10 0 0 0 20 0h-3" />
-    <path d="M5 12a7 7 0 0 1 14 0" />
-    <path d="M12 22a2.5 2.5 0 0 1-2.5-2.5V18h5v1.5A2.5 2.5 0 0 1 12 22Z" />
-  </svg>
-);
+  return (
+    <svg
+      {...rest}
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      preserveAspectRatio="xMidYMid meet"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <clipPath id="rounded">
+          <rect width={width} height={height} rx="50" ry="50" />
+        </clipPath>
+      </defs>
+
+      <image
+        href="/claricase.svg"
+        width={width}
+        height={height}
+        preserveAspectRatio="xMidYMid meet"
+        clipPath="url(#rounded)"
+      />
+    </svg>
+  );
+};
+
+export default LogoIcon;

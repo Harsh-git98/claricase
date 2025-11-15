@@ -43,7 +43,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           </button>
           <div className="flex items-center space-x-2">
               <LogoIcon className="w-7 h-7 text-purple-600" />
-              <span className="text-lg font-bold text-gray-800">Lexora</span>
+              <span className="text-lg font-bold text-gray-800">ClariCase</span>
           </div>
           <div className="w-7 h-7"></div>
       </div>
