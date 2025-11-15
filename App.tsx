@@ -23,6 +23,12 @@ const App: React.FC = () => {
 
   // Check authentication status on mount
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+const token = params.get("token");
+if (token) {
+  localStorage.setItem("lexora_token", token);
+  window.history.replaceState({}, document.title, "/"); // clear token from URL
+}
     const checkAuth = async () => {
       setIsAuthenticating(true);
       try {
@@ -47,10 +53,10 @@ const App: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await logout();
-      setUser(null);
-      setThreads([]);
-      setActiveThreadId(null);
+      localStorage.removeItem("lexora_token");
+setUser(null);
+setThreads([]);
+setActiveThreadId(null);
     } catch (error) {
       console.error('Logout failed:', error);
       setErrorMessage('Failed to logout. Please try again.');

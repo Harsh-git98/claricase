@@ -41,15 +41,18 @@ const apiCall = async (endpoint: string, options: RequestInit = {}, timeout = 12
   const timeoutId = setTimeout(() => controller.abort(), timeout);
 
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      credentials: 'include', // Important for session cookies
-      signal: controller.signal,
-    });
+    const token = localStorage.getItem("lexora_token");
+
+const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+  ...options,
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: token ? `Bearer ${token}` : "",
+    ...options.headers,
+  },
+  signal: controller.signal,
+});
+
 
     clearTimeout(timeoutId);
 
@@ -87,9 +90,6 @@ export const checkAuthStatus = async (): Promise<{
 };
 
 export const logout = async (): Promise<void> => {
-  await apiCall('/auth/logout', {
-    method: 'POST',
-  });
 };
 
 // ==================== AI SERVICES ====================
