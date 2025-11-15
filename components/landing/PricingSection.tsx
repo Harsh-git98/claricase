@@ -3,6 +3,7 @@ import React from 'react';
 interface PricingSectionProps {
   onLogin: () => void;
 }
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://reprompttserver.onrender.com/lawxora';
 
 const plans = [
   {
@@ -56,6 +57,10 @@ const plans = [
 ];
 
 export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin }) => {
+  const handleGoogleLogin = () => {
+    // Redirect to backend Google OAuth endpoint
+    window.location.href = `${API_BASE_URL}/auth/google`;
+  };
   return (
     <section className="py-20 lg:py-28 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -113,7 +118,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin }) => {
                 ))}
               </ul>
               <button
-                onClick={onLogin}
+                onClick={handleGoogleLogin}
                 className={`w-full py-3 px-6 rounded-lg font-semibold text-lg transition-all duration-300 ${
                   plan.popular
                     ? 'bg-white text-purple-600 hover:bg-purple-50 shadow-lg'

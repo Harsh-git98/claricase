@@ -3,8 +3,13 @@ import React from 'react';
 interface CTASectionProps {
   onLogin: () => void;
 }
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://reprompttserver.onrender.com/lawxora';
 
 export const CTASection: React.FC<CTASectionProps> = ({ onLogin }) => {
+  const handleGoogleLogin = () => {
+    // Redirect to backend Google OAuth endpoint
+    window.location.href = `${API_BASE_URL}/auth/google`;
+  };
   return (
     <section className="py-20 lg:py-28 bg-gradient-to-br from-slate-50 to-white relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-purple-100/50 [mask-image:radial-gradient(ellipse_at_center,white,transparent_70%)]"></div>
@@ -21,7 +26,7 @@ export const CTASection: React.FC<CTASectionProps> = ({ onLogin }) => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <button
-                  onClick={onLogin}
+                  onClick={handleGoogleLogin}
                   className="bg-white text-purple-600 font-bold py-4 px-10 rounded-lg text-lg hover:bg-purple-50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
                 >
                   Start Your Free Case Analysis

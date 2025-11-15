@@ -3,8 +3,13 @@ import React from 'react';
 interface HeroSectionProps {
     onLogin: () => void;
 }
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://reprompttserver.onrender.com/lawxora';
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onLogin }) => {
+    const handleGoogleLogin = () => {
+    // Redirect to backend Google OAuth endpoint
+    window.location.href = `${API_BASE_URL}/auth/google`;
+  };
     return (
         <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28">
             <div className="absolute inset-0 bg-grid-purple-100 [mask-image:linear-gradient(to_bottom,white_5%,transparent_80%)]"></div>
@@ -19,7 +24,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLogin }) => {
                     </p>
                     <div className="mt-8 flex justify-center">
                         <button
-                            onClick={onLogin}
+                            onClick={handleGoogleLogin}
                             className="bg-purple-600 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-purple-700 transition-colors duration-300 shadow-lg shadow-purple-500/30"
                         >
                             Get Started for Free

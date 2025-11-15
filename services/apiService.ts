@@ -1,6 +1,6 @@
 import { Message, GeminiResponse, User, CaseThread } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://reprompttserver.onrender.com/lawxora/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://reprompttserver.onrender.com/lawxora';
 
 // Image compression utility
 const compressImage = async (base64: string, maxWidth = 1024, quality = 0.8): Promise<string> => {
@@ -10,7 +10,6 @@ const compressImage = async (base64: string, maxWidth = 1024, quality = 0.8): Pr
       const canvas = document.createElement('canvas');
       let { width, height } = img;
       
-      // Resize if needed
       if (width > maxWidth) {
         height = (height * maxWidth) / width;
         width = maxWidth;
@@ -27,9 +26,7 @@ const compressImage = async (base64: string, maxWidth = 1024, quality = 0.8): Pr
       
       ctx.drawImage(img, 0, 0, width, height);
       
-      // Convert to JPEG with quality compression and return ONLY base64 part
       const compressed = canvas.toDataURL('image/jpeg', quality);
-      // Remove data:image/jpeg;base64, prefix
       resolve(compressed.split(',')[1]);
     };
     
@@ -38,7 +35,7 @@ const compressImage = async (base64: string, maxWidth = 1024, quality = 0.8): Pr
   });
 };
 
-// Helper function for API calls with better error handling
+// Helper function for API calls with credentials
 const apiCall = async (endpoint: string, options: RequestInit = {}, timeout = 120000) => {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -50,6 +47,7 @@ const apiCall = async (endpoint: string, options: RequestInit = {}, timeout = 12
         'Content-Type': 'application/json',
         ...options.headers,
       },
+      credentials: 'include', // Important for session cookies
       signal: controller.signal,
     });
 
@@ -73,29 +71,48 @@ const apiCall = async (endpoint: string, options: RequestInit = {}, timeout = 12
   }
 };
 
-// Gemini Service with image optimization
+// ==================== AUTH SERVICES ====================
+
+export const checkAuthStatus = async (): Promise<{ 
+  authenticated: boolean; 
+  user?: User; 
+  threads?: CaseThread[] 
+}> => {
+  try {
+    return await apiCall('/auth/me');
+  } catch (error) {
+    console.error('Auth check failed:', error);
+    return { authenticated: false };
+  }
+};
+
+export const logout = async (): Promise<void> => {
+  await apiCall('/auth/logout', {
+    method: 'POST',
+  });
+};
+
+// ==================== AI SERVICES ====================
+
 export const processUserTurn = async (
   history: Message[],
   userInput: string,
   imageBase64: string | null,
   isThinkingMode: boolean
 ): Promise<GeminiResponse> => {
-  // Validate inputs
   if (!userInput || userInput.trim() === "") {
     throw new Error("Message cannot be empty");
   }
 
   let optimizedImage = imageBase64;
   
-  // Compress image if present
   if (imageBase64) {
     try {
       console.log('Original image size:', Math.round(imageBase64.length / 1024), 'KB');
       optimizedImage = await compressImage(imageBase64, 1024, 0.7);
       console.log('Compressed image size:', Math.round(optimizedImage.length / 1024), 'KB');
       
-      // If still too large, compress more aggressively
-      if (optimizedImage.length > 2 * 1024 * 1024) { // > 2MB
+      if (optimizedImage.length > 2 * 1024 * 1024) {
         console.log('Image still large, compressing further...');
         optimizedImage = await compressImage(imageBase64, 800, 0.5);
         console.log('Final image size:', Math.round(optimizedImage.length / 1024), 'KB');
@@ -106,13 +123,11 @@ export const processUserTurn = async (
     }
   }
 
-  // Limit history and strip images from history to reduce payload
   const recentHistory = history.slice(-20).map(msg => ({
     role: msg.role,
     content: typeof msg.content === 'string' 
       ? msg.content.substring(0, 5000)
       : '[Non-text content]',
-    // Never include images from history - only current image matters
   }));
 
   const payload = {
@@ -122,7 +137,6 @@ export const processUserTurn = async (
     isThinkingMode,
   };
 
-  // Debug: Log payload size
   const payloadStr = JSON.stringify(payload);
   const payloadSize = new Blob([payloadStr]).size;
   const payloadMB = payloadSize / (1024 * 1024);
@@ -136,42 +150,28 @@ export const processUserTurn = async (
     throw new Error(`Payload too large (${payloadMB.toFixed(2)}MB). Please start a new case or use a smaller image.`);
   }
 
-  return apiCall('/process-message', {
+  return apiCall('/api/process-message', {
     method: 'POST',
     body: payloadStr,
-  }, 120000); // 2 minute timeout for thinking mode
+  }, 120000);
 };
 
-// Auth Service
-export const authenticateWithGoogle = async (token: string): Promise<{ user: User }> => {
-  return apiCall('/auth/google', {
-    method: 'POST',
-    body: JSON.stringify({ token }),
-  });
-};
-
-// Database Service
-export const findOrCreateUser = async (profile: Omit<User, 'id'>): Promise<{ user: User; threads: CaseThread[] }> => {
-  return apiCall('/users/find-or-create', {
-    method: 'POST',
-    body: JSON.stringify(profile),
-  });
-};
+// ==================== THREAD SERVICES ====================
 
 export const createThread = async (userId: string): Promise<CaseThread> => {
-  return apiCall('/threads', {
+  return apiCall('/api/threads', {
     method: 'POST',
     body: JSON.stringify({ userId }),
   });
 };
 
 export const updateThread = async (threadId: string, updatedData: Partial<CaseThread>): Promise<CaseThread> => {
-  return apiCall(`/threads/${threadId}`, {
+  return apiCall(`/api/threads/${threadId}`, {
     method: 'PATCH',
     body: JSON.stringify(updatedData),
   });
 };
 
 export const getUserThreads = async (userId: string): Promise<CaseThread[]> => {
-  return apiCall(`/users/${userId}/threads`);
+  return apiCall(`/api/users/${userId}/threads`);
 };

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { User, CaseThread, Message } from './types';
-import { findOrCreateUser, createThread, updateThread, processUserTurn } from './services/apiService';
-import { useGoogleLogin, googleLogout } from './services/googleOAuth';
+import { createThread, updateThread, processUserTurn, checkAuthStatus, logout } from './services/apiService';
 import { LoginScreen } from './components/LoginScreen';
 import { Sidebar } from './components/Sidebar';
 import { ChatView } from './components/ChatView';
@@ -22,50 +21,41 @@ const App: React.FC = () => {
   const [mobileView, setMobileView] = useState<MobileView>('chat');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleLoginSuccess = async (tokenResponse: { access_token: string }) => {
-    setIsAuthenticating(true);
-    try {
-      const mockProfile = {
-        googleId: `mock-google-id-${Date.now()}`,
-        name: 'Demo User',
-        email: 'demo.user@example.com',
-        picture: `https://i.pravatar.cc/150?u=${Date.now()}`,
-      };
-      
-      const { user: dbUser, threads: userThreads } = await findOrCreateUser(mockProfile);
-      setUser(dbUser);
-      setThreads(userThreads);
-      if (userThreads.length > 0) {
-        setActiveThreadId(userThreads[0].id);
-      }
-    } catch (error) {
-      console.error('Failed to authenticate:', error);
-      setErrorMessage('Authentication failed. Please try again.');
-    } finally {
-      setIsAuthenticating(false);
-    }
-  };
-  
-  const login = useGoogleLogin({
-    onSuccess: handleLoginSuccess,
-    onError: () => {
-      console.error('Login Failed');
-      setIsAuthenticating(false);
-      setErrorMessage('Login failed. Please try again.');
-    }
-  });
-
-  const handleLogout = () => {
-    googleLogout();
-    setUser(null);
-    setThreads([]);
-    setActiveThreadId(null);
-  };
-
+  // Check authentication status on mount
   useEffect(() => {
-    const timer = setTimeout(() => setIsAuthenticating(false), 500);
-    return () => clearTimeout(timer);
+    const checkAuth = async () => {
+      setIsAuthenticating(true);
+      try {
+        const { authenticated, user: authUser, threads: userThreads } = await checkAuthStatus();
+        
+        if (authenticated && authUser) {
+          setUser(authUser);
+          setThreads(userThreads || []);
+          if (userThreads && userThreads.length > 0) {
+            setActiveThreadId(userThreads[0].id);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to check auth status:', error);
+      } finally {
+        setIsAuthenticating(false);
+      }
+    };
+
+    checkAuth();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setUser(null);
+      setThreads([]);
+      setActiveThreadId(null);
+    } catch (error) {
+      console.error('Logout failed:', error);
+      setErrorMessage('Failed to logout. Please try again.');
+    }
+  };
 
   // Clear error messages after 5 seconds
   useEffect(() => {
@@ -133,7 +123,7 @@ const App: React.FC = () => {
       role: 'user',
       content: userInput.trim(),
       timestamp: new Date().toISOString(),
-      hasImage: !!imageBase64, // Just a flag to show image icon
+      hasImage: !!imageBase64,
     };
     
     const updatedMessages = [...activeThread.messages, userMessage];
@@ -181,6 +171,9 @@ const App: React.FC = () => {
           errorText = "The request timed out. Please try again or use a shorter message.";
         } else if (error.message.includes('compress') || error.message.includes('image')) {
           errorText = error.message;
+        } else if (error.message.includes('Not authenticated') || error.message.includes('401')) {
+          errorText = "Session expired. Please log in again.";
+          setUser(null);
         } else {
           errorText = error.message;
         }
@@ -210,7 +203,7 @@ const App: React.FC = () => {
   }
 
   if (!user) {
-    return <LoginScreen onLogin={login} />;
+    return <LoginScreen />;
   }
 
   return (
