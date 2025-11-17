@@ -93,7 +93,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLogin }) => {
           transition={{ duration: 1, delay: 0.2 }}
           className="mt-6 max-w-3xl mx-auto text-lg lg:text-xl text-gray-600 leading-relaxed"
         >
-          Lexora helps you analyze, summarize, and visualize legal documents —
+          ClariCase helps you analyze, summarize, and visualize legal documents —
           transforming complex information into clear, actionable understanding.
         </motion.p>
 

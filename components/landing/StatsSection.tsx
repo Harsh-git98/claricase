@@ -5,7 +5,7 @@ const stats = [
   { value: 10000, label: "Cases Analyzed", description: "Helping people understand complex legal situations" },
   { value: 95, label: "Satisfaction Rate", description: "Users who gained clarity on their cases" },
   { value: 2, label: "Average Response Time (mins)", description: "Get answers to your questions instantly" },
-  { value: 24, label: "Always Available (hrs)", description: "Access legal insights whenever you need them" },
+  { value: 100, label: "Always Available (24 hrs)", description: "Access legal insights whenever you need them" },
 ];
 
 // Helper to animate counting
