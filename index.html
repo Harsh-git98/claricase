@@ -2,28 +2,83 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
+    <!-- Mobile + Responsiveness -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lexora — AI Legal Assistant</title>
+
+    <!-- Primary SEO Meta Tags -->
+    <title>ClariCase – AI Legal Assistant for Case Summaries & Evidence Clarity</title>
+    <meta
+      name="description"
+      content="ClariCase helps you instantly understand legal cases using AI. Get case summaries, visual mind maps, and evidence insights effortlessly."
+    />
+    <meta
+      name="keywords"
+      content="legal AI, case summary AI, AI legal assistant, lawyer tools, evidence analysis, legal case summarizer, law technology"
+    />
+    <meta name="author" content="ClariCase" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Canonical URL (must have trailing slash for SPA SEO) -->
+    <link rel="canonical" href="https://www.claricase.xyz/" />
+
+    <!-- Open Graph (Facebook / LinkedIn / WhatsApp) -->
+    <meta property="og:title" content="ClariCase – AI Legal Assistant" />
+    <meta
+      property="og:description"
+      content="Instant case insights, summaries, and evidence clarity powered by AI."
+    />
+    <!-- IMPORTANT: OG images CANNOT be SVG -->
+    <meta
+      property="og:image"
+      content="https://www.claricase.xyz/claricase.jpg"
+    />
+    <meta property="og:url" content="https://www.claricase.xyz/" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ClariCase - AI Legal Assistant" />
+    <meta
+      name="twitter:description"
+      content="Understand legal cases faster with AI-powered summaries and visual mind maps."
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.claricase.xyz/claricase.jpg"
+    />
+
+    <!-- Performance & Aesthetic -->
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" href="/claricase.jpg" />
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
       body {
         overscroll-behavior: none;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
-    "d3": "https://aistudiocdn.com/d3@^7.9.0"
-  }
-}
-</script>
-</head>
+
+    <!-- Import Map (React 19 + D3 + Google GenAI) -->
+    <script type="importmap">
+      {
+        "imports": {
+          "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+          "react/": "https://aistudiocdn.com/react@^19.2.0/",
+          "react": "https://aistudiocdn.com/react@^19.2.0",
+          "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
+          "d3": "https://aistudiocdn.com/d3@^7.9.0"
+        }
+      }
+    </script>
+  </head>
+
   <body class="bg-slate-50 text-gray-800">
     <div id="root"></div>
+
+    <!-- Main App -->
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>

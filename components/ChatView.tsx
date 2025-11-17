@@ -207,19 +207,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
         </form>
         <div className="flex items-center justify-end mt-2">
           <label htmlFor="thinking-mode" className="flex items-center cursor-pointer">
-            <BrainCircuitIcon className={`w-5 h-5 mr-2 transition-colors ${isThinkingMode ? 'text-purple-600' : 'text-slate-400'}`} />
-            <span className="text-sm font-medium text-slate-600 mr-3">Pro Mode</span>
-            <div className="relative">
-              <input 
-                type="checkbox" 
-                id="thinking-mode" 
-                className="sr-only" 
-                checked={isThinkingMode} 
-                onChange={() => setIsThinkingMode(!isThinkingMode)} 
-              />
-              <div className="block bg-slate-200 w-10 h-6 rounded-full"></div>
-              <div className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition ${isThinkingMode ? 'transform translate-x-full bg-purple-600' : ''}`}></div>
-            </div>
+            <LogoIcon className={`w-5 h-5 mr-2 transition-colors ${isThinkingMode ? 'text-purple-600' : 'text-slate-400'}`} />
           </label>
         </div>
       </div>

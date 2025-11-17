@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Block private or JS-driven internal UI
+Disallow: /chat
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /settings
+Disallow: /api
+Disallow: /auth
+
+# Ensure Google knows your sitemap
+Sitemap: https://claricase.xyz/sitemap.xml
