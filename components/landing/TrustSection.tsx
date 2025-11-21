@@ -111,7 +111,7 @@ export const TrustSection: React.FC = () => {
 
       <div className="relative container mx-auto px-6 lg:px-12">
         {/* Heading with heavy animation */}
-        <motion.div
+{/*         <motion.div
           initial={{ opacity: 0, y: 40, scale: 0.95 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
@@ -135,10 +135,10 @@ export const TrustSection: React.FC = () => {
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             We understand the sensitive nature of legal matters. That's why security and privacy are at the core of everything we do.
           </p>
-        </motion.div>
+        </motion.div> */}
 
         {/* Grid with heavy entry animations */}
-        <motion.div
+{/*         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-20"
           variants={container}
           initial="hidden"
@@ -166,7 +166,7 @@ export const TrustSection: React.FC = () => {
               <p className="text-gray-600 leading-relaxed">{feature.description}</p>
             </motion.div>
           ))}
-        </motion.div>
+        </motion.div> */}
 
         {/* Disclaimer block with entry zoom */}
         <motion.div
