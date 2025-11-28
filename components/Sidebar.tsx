@@ -79,15 +79,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <>
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/30 z-30 lg:hidden"
+          className="fixed inset-0 bg-black/30 z-30"
           onClick={() => setIsOpen(false)}
           aria-hidden="true"
         ></div>
       )}
       <aside
-        className={`fixed lg:static top-0 left-0 h-full bg-white border-r border-slate-200 w-64 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out z-40 ${
+        className={`fixed top-0 left-0 h-full bg-white border-r border-slate-200 w-64 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out z-40 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0`}
+        }`}
       >
         <div className="flex items-center justify-between p-4 border-b border-slate-200">
           <div className="flex items-center space-x-2">
@@ -96,7 +96,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="lg:hidden p-1 text-slate-500 hover:text-slate-800"
+            className="p-1 text-slate-500 hover:text-slate-800"
+            aria-label="Close sidebar"
           >
             <XIcon className="w-6 h-6" />
           </button>
@@ -165,7 +166,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </ul>
         </nav>
 
-        {/* <div className="p-4 border-t border-slate-200">
+        <div className="p-4 border-t border-slate-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 min-w-0">
               <img
@@ -188,7 +189,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <LogoutIcon className="w-5 h-5" />
             </button>
           </div>
-        </div> */}
+        </div>
       </aside>
    
     {isAccountPopupOpen && (

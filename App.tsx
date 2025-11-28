@@ -9,6 +9,8 @@ import { MindMapView } from './components/MindMapView';
 import { WelcomeScreen } from './components/WelcomeScreen';
 import { MobileHeader } from './components/MobileHeader';
 import { QuickChatView } from './components/Quickchat';
+import { NotesPopup } from './components/NotesPopup';
+import { Note } from './types';
 
 type MobileView = 'chat' | 'summary' | 'mindmap';
 
@@ -24,6 +26,8 @@ const App: React.FC = () => {
   const [isQuickChatOpen, setIsQuickChatOpen] = useState(false);
   const [quickThread, setQuickThread] = useState<CaseThread | null>(null);
   const [isQuickLoading, setIsQuickLoading] = useState(false);
+  const [isNotesOpen, setIsNotesOpen] = useState(false);
+  const [notes, setNotes] = useState<Note[]>([]);
 
   // Check authentication status on mount
   useEffect(() => {
@@ -150,6 +154,61 @@ setActiveThreadId(null);
     window.dispatchEvent(event);
   };
 
+  // Notes helpers (persist in localStorage per user)
+    const notesStorageKey = (userId?: string) => `notes_${userId || 'guest'}`;
+  
+    const loadNotes = (userId?: string) => {
+      try {
+        const raw = localStorage.getItem(notesStorageKey(userId));
+        if (!raw) return [] as Note[];
+        return JSON.parse(raw) as Note[];
+      } catch (e) {
+        console.error('Failed to load notes:', e);
+        return [] as Note[];
+      }
+    };
+  
+    const saveNotes = (notesToSave: Note[], userId?: string) => {
+      try {
+        localStorage.setItem(notesStorageKey(userId), JSON.stringify(notesToSave));
+      } catch (e) {
+        console.error('Failed to save notes:', e);
+      }
+    };
+
+  const openNotes = () => {
+    const loaded = loadNotes(user?.id);
+    setNotes(loaded);
+    setIsNotesOpen(true);
+  };
+
+  const closeNotes = () => setIsNotesOpen(false);
+
+  const createNote = (payload: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const newNote: Note = {
+      id: `note_${Date.now()}`,
+      userId: user?.id,
+      title: payload.title,
+      content: payload.content,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    const updated = [newNote, ...notes];
+    setNotes(updated);
+    saveNotes(updated, user?.id);
+  };
+
+  const updateNote = (id: string, patch: Partial<Note>) => {
+    const updated = notes.map((n) => n.id === id ? { ...n, ...patch, updatedAt: new Date().toISOString() } : n);
+    setNotes(updated);
+    saveNotes(updated, user?.id);
+  };
+
+  const deleteNote = (id: string) => {
+    const updated = notes.filter((n) => n.id !== id);
+    setNotes(updated);
+    saveNotes(updated, user?.id);
+  };
   const handleSendQuickMessage = async (userInput: string, imageBase64: string | null, isThinkingMode: boolean) => {
     if (!quickThread) return;
     if (!userInput.trim() && !imageBase64) return;
@@ -335,6 +394,7 @@ setActiveThreadId(null);
           activeView={mobileView}
           setActiveView={setMobileView}
           hasActiveThread={!!activeThread}
+          onOpenNotes={openNotes}
         />
         
         <main className="flex-1 flex overflow-hidden min-h-0">
@@ -349,9 +409,10 @@ setActiveThreadId(null);
               />
             </div>
           ) : activeThread ? (
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 h-full">
-              {/* Chat View */}
-              <div className={`bg-white border-r border-slate-200 ${mobileView === 'chat' ? 'flex' : 'hidden'} lg:flex flex-col h-full min-h-0`}>
+            // Mobile-first single-column layout (applies to desktop as well)
+            <div className="flex-1 flex flex-col h-full">
+              {/* Chat View (full-screen when selected) */}
+              <div className={`bg-white border-r border-slate-200 ${mobileView === 'chat' ? 'flex' : 'hidden'} flex flex-col h-full min-h-0`}>
                 <ChatView
                   thread={activeThread}
                   onSendMessage={handleSendMessage}
@@ -359,30 +420,17 @@ setActiveThreadId(null);
                   onUpdateTitle={(newTitle) => handleUpdateThreadTitle(activeThread.id, newTitle)}
                 />
               </div>
-              
-              {/* Desktop: Summary and MindMap split */}
-              <div className="hidden lg:flex flex-col h-full">
-                <div className="flex-1 min-h-0 border-b border-slate-200 overflow-y-auto">
-                  <SummaryView 
-                    summary={activeThread.summary} 
-                    isLoading={isLoading && activeThread.summary.includes('generated yet')} 
-                  />
-                </div>
-                <div className="flex-1 min-h-0 overflow-y-auto">
-                  <MindMapView mindMap={activeThread.mindMap} />
-                </div>
-              </div>
 
-              {/* Mobile: Summary View */}
-              <div className={`bg-white ${mobileView === 'summary' ? 'block' : 'hidden'} lg:hidden h-full overflow-y-auto`}>
+              {/* Summary View (mobile-style full screen) */}
+              <div className={`bg-white ${mobileView === 'summary' ? 'block' : 'hidden'} h-full overflow-y-auto`}>
                 <SummaryView 
                   summary={activeThread.summary} 
                   isLoading={isLoading && activeThread.summary.includes('generated yet')} 
                 />
               </div>
 
-              {/* Mobile: MindMap View */}
-              <div className={`bg-white ${mobileView === 'mindmap' ? 'block' : 'hidden'} lg:hidden h-full overflow-y-auto`}>
+              {/* MindMap View (mobile-style full screen) */}
+              <div className={`bg-white ${mobileView === 'mindmap' ? 'block' : 'hidden'} h-full overflow-y-auto`}>
                 <MindMapView mindMap={activeThread.mindMap} />
               </div>
             </div>
@@ -392,6 +440,15 @@ setActiveThreadId(null);
             </div>
           )}
         </main>
+        {isNotesOpen && (
+          <NotesPopup
+            notes={notes}
+            onClose={closeNotes}
+            onCreate={createNote}
+            onUpdate={updateNote}
+            onDelete={deleteNote}
+          />
+        )}
       </div>
     </div>
   
