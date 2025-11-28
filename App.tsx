@@ -8,6 +8,7 @@ import { SummaryView } from './components/SummaryView';
 import { MindMapView } from './components/MindMapView';
 import { WelcomeScreen } from './components/WelcomeScreen';
 import { MobileHeader } from './components/MobileHeader';
+import { QuickChatView } from './components/Quickchat';
 
 type MobileView = 'chat' | 'summary' | 'mindmap';
 
@@ -20,6 +21,9 @@ const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [mobileView, setMobileView] = useState<MobileView>('chat');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isQuickChatOpen, setIsQuickChatOpen] = useState(false);
+  const [quickThread, setQuickThread] = useState<CaseThread | null>(null);
+  const [isQuickLoading, setIsQuickLoading] = useState(false);
 
   // Check authentication status on mount
   useEffect(() => {
@@ -109,6 +113,84 @@ setActiveThreadId(null);
       console.error("Failed to update thread title:", error);
       setThreads(originalThreads);
       setErrorMessage('Failed to update title. Please try again.');
+    }
+  };
+
+  // QuickChat: ephemeral temporary chat that is not saved to server
+  useEffect(() => {
+    const onOpen = () => {
+      const qt: CaseThread = {
+        id: `quickchat_${Date.now()}`,
+        userId: user?.id || 'guest',
+        title: 'Quick Chat',
+        messages: [],
+        summary: '',
+        mindMap: { nodes: [], edges: [] },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      setQuickThread(qt);
+      setIsQuickChatOpen(true);
+      setIsQuickLoading(false);
+    };
+
+    window.addEventListener('openQuickChat', onOpen as EventListener);
+    return () => window.removeEventListener('openQuickChat', onOpen as EventListener);
+  }, [user]);
+
+  const closeQuickChat = () => {
+    setIsQuickChatOpen(false);
+    setQuickThread(null);
+    setIsQuickLoading(false);
+  };
+
+  const triggerQuickChat = () => {
+    const event = new CustomEvent('openQuickChat');
+    window.dispatchEvent(event);
+  };
+
+  const handleSendQuickMessage = async (userInput: string, imageBase64: string | null, isThinkingMode: boolean) => {
+    if (!quickThread) return;
+    if (!userInput.trim() && !imageBase64) return;
+
+    const userMessage = {
+      role: 'user' as const,
+      content: userInput.trim() || (imageBase64 ? 'Analyze this file' : ''),
+      timestamp: new Date().toISOString(),
+      hasImage: !!imageBase64,
+    };
+
+    // optimistic local update
+    setQuickThread(prev => prev ? { ...prev, messages: [...prev.messages, userMessage], updatedAt: new Date().toISOString() } : prev);
+    setIsQuickLoading(true);
+
+    try {
+      const geminiResponse = await processUserTurn(
+        [...quickThread.messages, userMessage],
+        userInput.trim(),
+        imageBase64,
+        isThinkingMode
+      );
+
+      const assistantMessage = {
+        role: 'assistant' as const,
+        content: geminiResponse.chatResponse,
+        timestamp: new Date().toISOString(),
+      };
+
+      setQuickThread(prev => prev ? { ...prev, messages: [...prev.messages, userMessage, assistantMessage], updatedAt: new Date().toISOString() } : prev);
+    } catch (error) {
+      console.error('QuickChat send failed:', error);
+      const errText = error instanceof Error ? error.message : 'An error occurred';
+      const assistantMessage = {
+        role: 'assistant' as const,
+        content: errText,
+        timestamp: new Date().toISOString(),
+      };
+      setQuickThread(prev => prev ? { ...prev, messages: [...prev.messages, userMessage, assistantMessage], updatedAt: new Date().toISOString() } : prev);
+    } finally {
+      setIsQuickLoading(false);
     }
   };
 
@@ -244,6 +326,7 @@ setActiveThreadId(null);
         isOpen={isSidebarOpen}
         setIsOpen={setIsSidebarOpen}
         onUpdateThreadTitle={handleUpdateThreadTitle}
+        openQuickChat={triggerQuickChat}
       />
       
       <div className="flex-1 flex flex-col min-w-0">
@@ -255,7 +338,17 @@ setActiveThreadId(null);
         />
         
         <main className="flex-1 flex overflow-hidden min-h-0">
-          {activeThread ? (
+          {isQuickChatOpen && quickThread ? (
+            <div className="flex-1 flex flex-col h-full min-h-0 bg-white">
+              <QuickChatView
+                thread={quickThread}
+                onSendMessage={handleSendQuickMessage}
+                isLoading={isQuickLoading}
+                onUpdateTitle={(newTitle) => setQuickThread(prev => prev ? { ...prev, title: newTitle } : prev)}
+                onClose={closeQuickChat}
+              />
+            </div>
+          ) : activeThread ? (
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 h-full">
               {/* Chat View */}
               <div className={`bg-white border-r border-slate-200 ${mobileView === 'chat' ? 'flex' : 'hidden'} lg:flex flex-col h-full min-h-0`}>
@@ -301,6 +394,8 @@ setActiveThreadId(null);
         </main>
       </div>
     </div>
+  
+   
   );
 };
 

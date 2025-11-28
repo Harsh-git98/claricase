@@ -35,6 +35,9 @@ const compressImage = async (base64: string, maxWidth = 1024, quality = 0.8): Pr
   });
 };
 
+const quickchat = async () => {
+  // Placeholder function for quickchat-related API calls
+};
 // Helper function for API calls with credentials
 const apiCall = async (endpoint: string, options: RequestInit = {}, timeout = 120000) => {
   const controller = new AbortController();
