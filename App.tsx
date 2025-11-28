@@ -12,6 +12,15 @@ import { QuickChatView } from './components/Quickchat';
 import { NotesPopup } from './components/NotesPopup';
 import { Note } from './types';
 
+import { 
+  getNotes, 
+  createNote, 
+  updateNote, 
+  deleteNote,
+  processQuickChatMessage,
+  saveQuickChatAsThread
+} from './services/apiService';
+
 type MobileView = 'chat' | 'summary' | 'mindmap';
 
 const App: React.FC = () => {
@@ -28,6 +37,140 @@ const App: React.FC = () => {
   const [isQuickLoading, setIsQuickLoading] = useState(false);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [notes, setNotes] = useState<Note[]>([]);
+const [isLoadingNotes, setIsLoadingNotes] = useState(false);
+
+// Load notes from backend when user logs in or notes popup opens
+const loadNotesFromBackend = async () => {
+  if (!user) return;
+  
+  setIsLoadingNotes(true);
+  try {
+    const fetchedNotes = await getNotes();
+    setNotes(fetchedNotes);
+  } catch (error) {
+    console.error('Failed to load notes:', error);
+    setErrorMessage('Failed to load notes. Please try again.');
+  } finally {
+    setIsLoadingNotes(false);
+  }
+};
+
+const openNotes = async () => {
+  setIsNotesOpen(true);
+  await loadNotesFromBackend();
+};
+
+const closeNotes = () => setIsNotesOpen(false);
+
+const createNoteHandler = async (payload: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => {
+  try {
+    const newNote = await createNote(payload);
+    setNotes(prev => [newNote, ...prev]);
+  } catch (error) {
+    console.error('Failed to create note:', error);
+    setErrorMessage('Failed to create note. Please try again.');
+  }
+};
+
+const updateNoteHandler = async (id: string, patch: Partial<Note>) => {
+  const originalNotes = notes;
+  
+  // Optimistic update
+  setNotes(prev => prev.map(n => 
+    n.id === id ? { ...n, ...patch, updatedAt: new Date().toISOString() } : n
+  ));
+
+  try {
+    const updatedNote = await updateNote(id, patch);
+    setNotes(prev => prev.map(n => n.id === id ? updatedNote : n));
+  } catch (error) {
+    console.error('Failed to update note:', error);
+    setNotes(originalNotes);
+    setErrorMessage('Failed to update note. Please try again.');
+  }
+};
+
+const deleteNoteHandler = async (id: string) => {
+  const originalNotes = notes;
+  
+  // Optimistic update
+  setNotes(prev => prev.filter(n => n.id !== id));
+
+  try {
+    await deleteNote(id);
+  } catch (error) {
+    console.error('Failed to delete note:', error);
+    setNotes(originalNotes);
+    setErrorMessage('Failed to delete note. Please try again.');
+  }
+};
+
+// ==================== QUICKCHAT MANAGEMENT ====================
+// Replace handleSendQuickMessage with this:
+
+const handleSendQuickMessage = async (
+  userInput: string, 
+  imageBase64: string | null, 
+  isThinkingMode: boolean
+) => {
+  if (!quickThread) return;
+  if (!userInput.trim() && !imageBase64) return;
+
+  const userMessage = {
+    role: 'user' as const,
+    content: userInput.trim() || (imageBase64 ? 'Analyze this file' : ''),
+    timestamp: new Date().toISOString(),
+    hasImage: !!imageBase64,
+  };
+
+  // Optimistic local update
+  setQuickThread(prev => prev ? { 
+    ...prev, 
+    messages: [...prev.messages, userMessage], 
+    updatedAt: new Date().toISOString() 
+  } : prev);
+  setIsQuickLoading(true);
+
+  try {
+    // Use the QuickChat-specific API endpoint
+    const geminiResponse = await processQuickChatMessage(
+      [...quickThread.messages, userMessage],
+      userInput.trim(),
+      imageBase64,
+      isThinkingMode
+    );
+
+    const assistantMessage = {
+      role: 'assistant' as const,
+      content: geminiResponse.chatResponse,
+      timestamp: new Date().toISOString(),
+    };
+
+    setQuickThread(prev => prev ? { 
+      ...prev, 
+      messages: [...prev.messages, userMessage, assistantMessage], 
+      updatedAt: new Date().toISOString() 
+    } : prev);
+  } catch (error) {
+    console.error('QuickChat send failed:', error);
+    const errText = error instanceof Error ? error.message : 'An error occurred';
+    const assistantMessage = {
+      role: 'assistant' as const,
+      content: errText,
+      timestamp: new Date().toISOString(),
+    };
+    setQuickThread(prev => prev ? { 
+      ...prev, 
+      messages: [...prev.messages, userMessage, assistantMessage], 
+      updatedAt: new Date().toISOString() 
+    } : prev);
+    setErrorMessage(errText);
+  } finally {
+    setIsQuickLoading(false);
+  }
+};
+
+
 
   // Check authentication status on mount
   useEffect(() => {
@@ -154,104 +297,7 @@ setActiveThreadId(null);
     window.dispatchEvent(event);
   };
 
-  // Notes helpers (persist in localStorage per user)
-    const notesStorageKey = (userId?: string) => `notes_${userId || 'guest'}`;
   
-    const loadNotes = (userId?: string) => {
-      try {
-        const raw = localStorage.getItem(notesStorageKey(userId));
-        if (!raw) return [] as Note[];
-        return JSON.parse(raw) as Note[];
-      } catch (e) {
-        console.error('Failed to load notes:', e);
-        return [] as Note[];
-      }
-    };
-  
-    const saveNotes = (notesToSave: Note[], userId?: string) => {
-      try {
-        localStorage.setItem(notesStorageKey(userId), JSON.stringify(notesToSave));
-      } catch (e) {
-        console.error('Failed to save notes:', e);
-      }
-    };
-
-  const openNotes = () => {
-    const loaded = loadNotes(user?.id);
-    setNotes(loaded);
-    setIsNotesOpen(true);
-  };
-
-  const closeNotes = () => setIsNotesOpen(false);
-
-  const createNote = (payload: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => {
-    const newNote: Note = {
-      id: `note_${Date.now()}`,
-      userId: user?.id,
-      title: payload.title,
-      content: payload.content,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    const updated = [newNote, ...notes];
-    setNotes(updated);
-    saveNotes(updated, user?.id);
-  };
-
-  const updateNote = (id: string, patch: Partial<Note>) => {
-    const updated = notes.map((n) => n.id === id ? { ...n, ...patch, updatedAt: new Date().toISOString() } : n);
-    setNotes(updated);
-    saveNotes(updated, user?.id);
-  };
-
-  const deleteNote = (id: string) => {
-    const updated = notes.filter((n) => n.id !== id);
-    setNotes(updated);
-    saveNotes(updated, user?.id);
-  };
-  const handleSendQuickMessage = async (userInput: string, imageBase64: string | null, isThinkingMode: boolean) => {
-    if (!quickThread) return;
-    if (!userInput.trim() && !imageBase64) return;
-
-    const userMessage = {
-      role: 'user' as const,
-      content: userInput.trim() || (imageBase64 ? 'Analyze this file' : ''),
-      timestamp: new Date().toISOString(),
-      hasImage: !!imageBase64,
-    };
-
-    // optimistic local update
-    setQuickThread(prev => prev ? { ...prev, messages: [...prev.messages, userMessage], updatedAt: new Date().toISOString() } : prev);
-    setIsQuickLoading(true);
-
-    try {
-      const geminiResponse = await processUserTurn(
-        [...quickThread.messages, userMessage],
-        userInput.trim(),
-        imageBase64,
-        isThinkingMode
-      );
-
-      const assistantMessage = {
-        role: 'assistant' as const,
-        content: geminiResponse.chatResponse,
-        timestamp: new Date().toISOString(),
-      };
-
-      setQuickThread(prev => prev ? { ...prev, messages: [...prev.messages, userMessage, assistantMessage], updatedAt: new Date().toISOString() } : prev);
-    } catch (error) {
-      console.error('QuickChat send failed:', error);
-      const errText = error instanceof Error ? error.message : 'An error occurred';
-      const assistantMessage = {
-        role: 'assistant' as const,
-        content: errText,
-        timestamp: new Date().toISOString(),
-      };
-      setQuickThread(prev => prev ? { ...prev, messages: [...prev.messages, userMessage, assistantMessage], updatedAt: new Date().toISOString() } : prev);
-    } finally {
-      setIsQuickLoading(false);
-    }
-  };
 
   const handleSendMessage = async (userInput: string, imageBase64: string | null, isThinkingMode: boolean) => {
     if (!activeThread || !activeThreadId) return;
@@ -400,14 +446,15 @@ setActiveThreadId(null);
         <main className="flex-1 flex overflow-hidden min-h-0">
           {isQuickChatOpen && quickThread ? (
             <div className="flex-1 flex flex-col h-full min-h-0 bg-white">
-              <QuickChatView
-                thread={quickThread}
-                onSendMessage={handleSendQuickMessage}
-                isLoading={isQuickLoading}
-                onUpdateTitle={(newTitle) => setQuickThread(prev => prev ? { ...prev, title: newTitle } : prev)}
-                onClose={closeQuickChat}
-              />
-            </div>
+    <QuickChatView
+      thread={quickThread}
+      onSendMessage={handleSendQuickMessage}
+      isLoading={isQuickLoading}
+      onUpdateTitle={(newTitle) => setQuickThread(prev => prev ? { ...prev, title: newTitle } : prev)}
+      onClose={closeQuickChat}
+      onSave={user ? saveQuickChatAsThread : undefined} // Only show save if logged in
+    />
+  </div>
           ) : activeThread ? (
             // Mobile-first single-column layout (applies to desktop as well)
             <div className="flex-1 flex flex-col h-full">
@@ -441,14 +488,15 @@ setActiveThreadId(null);
           )}
         </main>
         {isNotesOpen && (
-          <NotesPopup
-            notes={notes}
-            onClose={closeNotes}
-            onCreate={createNote}
-            onUpdate={updateNote}
-            onDelete={deleteNote}
-          />
-        )}
+  <NotesPopup
+    notes={notes}
+    isLoading={isLoadingNotes}
+    onClose={closeNotes}
+    onCreate={createNoteHandler}
+    onUpdate={updateNoteHandler}
+    onDelete={deleteNoteHandler}
+  />
+)}
       </div>
     </div>
   

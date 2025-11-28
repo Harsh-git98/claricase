@@ -1,4 +1,4 @@
-import { Message, GeminiResponse, User, CaseThread } from '../types';
+import { Message, GeminiResponse, User, CaseThread, Note } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://reprompttserver.onrender.com/lawxora';
 
@@ -35,9 +35,6 @@ const compressImage = async (base64: string, maxWidth = 1024, quality = 0.8): Pr
   });
 };
 
-const quickchat = async () => {
-  // Placeholder function for quickchat-related API calls
-};
 // Helper function for API calls with credentials
 const apiCall = async (endpoint: string, options: RequestInit = {}, timeout = 120000) => {
   const controller = new AbortController();
@@ -46,16 +43,15 @@ const apiCall = async (endpoint: string, options: RequestInit = {}, timeout = 12
   try {
     const token = localStorage.getItem("lexora_token");
 
-const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-  ...options,
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: token ? `Bearer ${token}` : "",
-    ...options.headers,
-  },
-  signal: controller.signal,
-});
-
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token ? `Bearer ${token}` : "",
+        ...options.headers,
+      },
+      signal: controller.signal,
+    });
 
     clearTimeout(timeoutId);
 
@@ -93,6 +89,7 @@ export const checkAuthStatus = async (): Promise<{
 };
 
 export const logout = async (): Promise<void> => {
+  await apiCall('/auth/logout', { method: 'POST' });
 };
 
 // ==================== AI SERVICES ====================
@@ -159,6 +156,65 @@ export const processUserTurn = async (
   }, 120000);
 };
 
+// ==================== QUICKCHAT SERVICES ====================
+
+export const processQuickChatMessage = async (
+  history: Message[],
+  userInput: string,
+  imageBase64: string | null,
+  isThinkingMode: boolean
+): Promise<GeminiResponse> => {
+  if (!userInput || userInput.trim() === "") {
+    throw new Error("Message cannot be empty");
+  }
+
+  let optimizedImage = imageBase64;
+  
+  if (imageBase64) {
+    try {
+      // Use more aggressive compression for QuickChat (5MB limit)
+      optimizedImage = await compressImage(imageBase64, 800, 0.6);
+      
+      if (optimizedImage.length > 1024 * 1024) {
+        optimizedImage = await compressImage(imageBase64, 600, 0.4);
+      }
+    } catch (error) {
+      console.error('Image compression failed:', error);
+      throw new Error('Failed to process image. Please try a smaller image.');
+    }
+  }
+
+  const recentHistory = history.slice(-10).map(msg => ({
+    role: msg.role,
+    content: typeof msg.content === 'string' 
+      ? msg.content.substring(0, 2000)
+      : '[Non-text content]',
+  }));
+
+  const payload = {
+    history: recentHistory,
+    userInput: userInput.trim().substring(0, 2000),
+    imageBase64: optimizedImage,
+    isThinkingMode,
+  };
+
+  // No authentication required for QuickChat
+  return apiCall('/api/quickchat', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }, 60000);
+};
+
+export const saveQuickChatAsThread = async (
+  messages: Message[],
+  title?: string
+): Promise<CaseThread> => {
+  return apiCall('/api/quickchat/save', {
+    method: 'POST',
+    body: JSON.stringify({ messages, title }),
+  });
+};
+
 // ==================== THREAD SERVICES ====================
 
 export const createThread = async (userId: string): Promise<CaseThread> => {
@@ -177,4 +233,30 @@ export const updateThread = async (threadId: string, updatedData: Partial<CaseTh
 
 export const getUserThreads = async (userId: string): Promise<CaseThread[]> => {
   return apiCall(`/api/users/${userId}/threads`);
+};
+
+// ==================== NOTES SERVICES ====================
+
+export const getNotes = async (): Promise<Note[]> => {
+  return apiCall('/api/notes');
+};
+
+export const createNote = async (noteData: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>): Promise<Note> => {
+  return apiCall('/api/notes', {
+    method: 'POST',
+    body: JSON.stringify(noteData),
+  });
+};
+
+export const updateNote = async (noteId: string, updates: Partial<Note>): Promise<Note> => {
+  return apiCall(`/api/notes/${noteId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(updates),
+  });
+};
+
+export const deleteNote = async (noteId: string): Promise<void> => {
+  await apiCall(`/api/notes/${noteId}`, {
+    method: 'DELETE',
+  });
 };
