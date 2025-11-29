@@ -73,9 +73,9 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
         (isQuickChatOpen) ? (
           <div className="p-4 border-t border-slate-200 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-semibold truncate">{activeThreadTitle}</h2>
+              <h2 className="text-center font-semibold truncate">{activeThreadTitle}</h2>
             </div>
-            {onCloseThread && <button onClick={onCloseThread}><XIcon className="w-6 h-6"/></button>}
+            {onCloseThread && <button onClick={onCloseThread} className="flex items-center gap-2 text-red-400 border border-red-400 rounded-md px-2 py-1"><XIcon className="w-6 h-6"/>End Chat</button>}
           </div>
         ) : (
           <nav className="border-t border-slate-200">

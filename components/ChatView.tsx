@@ -161,7 +161,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
         <div ref={messagesEndRef} />
       </div>
       
-      <div className="p-4 border-t border-slate-200 flex-shrink-0">
+      <div className="p-4 border-t border-purple-600 flex-shrink-0">
         {attachedImage && (
           <div className="mb-2 p-2 bg-slate-100 rounded-md text-sm flex justify-between items-center">
             <span className="truncate">{attachedImage.file.name}</span>
@@ -193,8 +193,8 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
               }
             }}
             placeholder="Type your message or upload a file..."
-            className="flex-1 p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
-            rows={1}
+            className="flex-1 p-2 border border-slate-800 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
+            rows={2}
             disabled={isLoading}
           />
           <button 
@@ -205,9 +205,8 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
             <SendIcon className="w-5 h-5" />
           </button>
         </form>
-        <div className="flex items-center justify-end mt-2">
+        <div className="flex items-center justify-end mt-2 height-4">
           <label htmlFor="thinking-mode" className="flex items-center cursor-pointer">
-            <LogoIcon className={`w-5 h-5 mr-2 transition-colors ${isThinkingMode ? 'text-purple-600' : 'text-slate-400'}`} />
           </label>
         </div>
       </div>

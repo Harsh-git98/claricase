@@ -148,7 +148,7 @@ const handleSendQuickMessage = async (
 
     setQuickThread(prev => prev ? { 
       ...prev, 
-      messages: [...prev.messages, userMessage, assistantMessage], 
+      messages: [...prev.messages, assistantMessage], 
       updatedAt: new Date().toISOString() 
     } : prev);
   } catch (error) {

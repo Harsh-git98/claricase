@@ -167,7 +167,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </ul>
         </nav>
 
-        <div className="p-4 border-t border-slate-200">
+        {/* <div className="p-4 border-t border-slate-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 min-w-0">
               <img
@@ -190,7 +190,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <LogoutIcon className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        </div> */}
       </aside>
    
     {isAccountPopupOpen && (
