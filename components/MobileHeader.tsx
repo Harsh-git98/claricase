@@ -43,6 +43,9 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   setActiveView,
   hasActiveThread,
   onOpenNotes,
+  activeThreadTitle,
+  onCloseThread,
+  isQuickChatOpen,
 }) => {
   return (
     <header className="bg-white border-b border-slate-200 flex-shrink-0">
