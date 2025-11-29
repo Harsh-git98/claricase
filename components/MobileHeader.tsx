@@ -70,7 +70,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
       {hasActiveThread && (
         // Show either the chat header (when quick chat is open or chat view active)
         // or the three-tab nav (when summary/mindmap active)
-        (isQuickChatOpen || activeView === 'chat') ? (
+        (isQuickChatOpen) ? (
           <div className="p-4 border-t border-slate-200 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-semibold truncate">{activeThreadTitle}</h2>
