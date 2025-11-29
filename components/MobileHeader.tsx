@@ -1,7 +1,7 @@
 import React from 'react';
 import { LogoIcon } from './icons/LogoIcon';
 import { MenuIcon } from './icons/MenuIcon';
-
+import { DocumentTextIcon } from './icons/DocumentTextIcon';
 type MobileView = 'chat' | 'summary' | 'mindmap';
 
 interface MobileHeaderProps {
@@ -49,11 +49,11 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           </div>
           <div className="flex items-center gap-2">
             {onOpenNotes && (
-              <button onClick={onOpenNotes} title="Notes" className="p-2 rounded-md text-slate-600 hover:bg-slate-100">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /><path d="M17 3v8" /><path d="M7 7h8" /></svg>
+              <button onClick={onOpenNotes} title="Notes" className="p-2 rounded-md text-slate-600 hover:bg-slate-100 hover:text-purple-600 flex items-center justify-center">
+                <DocumentTextIcon className="w-5 h-5" />
+                <p className="font-semibold ">Notes</p>
               </button>
             )}
-            <div className="w-7 h-7" />
           </div>
       </div>
       {hasActiveThread && (

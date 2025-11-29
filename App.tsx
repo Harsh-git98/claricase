@@ -395,9 +395,9 @@ setActiveThreadId(null);
     );
   }
 
-  if (!user) {
-    return <LoginScreen />;
-  }
+  // if (!user) {
+  //   return <LoginScreen />;
+  // }
 
   return (
     <div className="flex h-screen bg-slate-50 font-sans">
@@ -483,7 +483,7 @@ setActiveThreadId(null);
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center">
-              <WelcomeScreen />
+              <WelcomeScreen onOpenQuickChat={triggerQuickChat} onCreateThread={handleCreateThread} />
             </div>
           )}
         </main>
