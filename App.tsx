@@ -395,9 +395,9 @@ setActiveThreadId(null);
     );
   }
 
-  // if (!user) {
-  //   return <LoginScreen />;
-  // }
+  if (!user) {
+    return <LoginScreen />;
+  }
 
   return (
     <div className="flex h-screen bg-slate-50 font-sans">
