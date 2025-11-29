@@ -2,6 +2,7 @@ import React from 'react';
 import { LogoIcon } from './icons/LogoIcon';
 import { MenuIcon } from './icons/MenuIcon';
 import { DocumentTextIcon } from './icons/DocumentTextIcon';
+import { XIcon } from './icons/XIcon';
 type MobileView = 'chat' | 'summary' | 'mindmap';
 
 interface MobileHeaderProps {
@@ -10,6 +11,12 @@ interface MobileHeaderProps {
   setActiveView: (view: MobileView) => void;
   hasActiveThread: boolean;
   onOpenNotes?: () => void;
+  // New: optional active thread title (used for quick chat or active chat header)
+  activeThreadTitle?: string | null;
+  // New: handler to close the active/quick chat
+  onCloseThread?: () => void;
+  // New: whether a quick chat is open (so header shows the title instead of tabs)
+  isQuickChatOpen?: boolean;
 }
 
 const TabButton: React.FC<{
@@ -56,14 +63,26 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
             )}
           </div>
       </div>
+
       {hasActiveThread && (
-        <nav className="border-t border-slate-200">
-          <div className="flex justify-around">
-            <TabButton label="Chat" view="chat" activeView={activeView} onClick={setActiveView} />
-            <TabButton label="Summary" view="summary" activeView={activeView} onClick={setActiveView} />
-            <TabButton label="Mind Map" view="mindmap" activeView={activeView} onClick={setActiveView} />
+        // Show either the chat header (when quick chat is open or chat view active)
+        // or the three-tab nav (when summary/mindmap active)
+        (isQuickChatOpen || activeView === 'chat') ? (
+          <div className="p-4 border-t border-slate-200 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg font-semibold truncate">{activeThreadTitle}</h2>
+            </div>
+            {onCloseThread && <button onClick={onCloseThread}><XIcon className="w-6 h-6"/></button>}
           </div>
-        </nav>
+        ) : (
+          <nav className="border-t border-slate-200">
+            <div className="flex justify-around">
+              <TabButton label="Chat" view="chat" activeView={activeView} onClick={setActiveView} />
+              <TabButton label="Summary" view="summary" activeView={activeView} onClick={setActiveView} />
+              <TabButton label="Mind Map" view="mindmap" activeView={activeView} onClick={setActiveView} />
+            </div>
+          </nav>
+        )
       )}
     </header>
   );

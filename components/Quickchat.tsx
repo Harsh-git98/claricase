@@ -1,12 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { CaseThread } from '../types';
 import { SendIcon } from './icons/SendIcon';
-import { PaperclipIcon } from './icons/PaperclipIcon';
 import { LogoIcon } from './icons/LogoIcon';
 import { UserIcon } from './icons/UserIcon';
-import { PencilIcon } from './icons/PencilIcon';
-import { CheckIcon } from './icons/CheckIcon';
-import { XIcon } from './icons/XIcon';
 
 interface ChatViewProps {
   thread: CaseThread;
@@ -14,6 +10,7 @@ interface ChatViewProps {
   isLoading: boolean;
   onUpdateTitle: (newTitle: string) => void;
   onClose?: () => void;
+  onSave?: (payload?: any) => void;
 }
 
 export const QuickChatView: React.FC<ChatViewProps> = ({ 
@@ -53,17 +50,7 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
 
   return (
     <div className="flex flex-col h-full">
-
-      {/* Header */}
-      <div className="p-4 border-b border-slate-200 flex items-center justify-between">
-       
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-semibold truncate">{thread.title}</h2>
-          </div>
-        
-        {onClose && <button onClick={onClose}><XIcon className="w-6 h-6"/></button>}
-      </div>
-
+      
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {thread.messages.map((msg, i) => (

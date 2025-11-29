@@ -439,8 +439,11 @@ setActiveThreadId(null);
           onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           activeView={mobileView}
           setActiveView={setMobileView}
-          hasActiveThread={!!activeThread}
+          hasActiveThread={!!(activeThread || quickThread)}
           onOpenNotes={openNotes}
+          activeThreadTitle={isQuickChatOpen && quickThread ? quickThread.title : activeThread ? activeThread.title : undefined}
+          onCloseThread={isQuickChatOpen ? closeQuickChat : undefined}
+          isQuickChatOpen={isQuickChatOpen}
         />
         
         <main className="flex-1 flex overflow-hidden min-h-0">
