@@ -224,6 +224,11 @@ setActiveThreadId(null);
 
   const handleCreateThread = async () => {
     if (!user) return;
+    if (user?.pro==false)
+    {
+      setErrorMessage("Create a Pro account to start a new case.");
+      return;
+    }
     try {
       const newThread = await createThread(user.id);
       setThreads(prev => [newThread, ...prev]);

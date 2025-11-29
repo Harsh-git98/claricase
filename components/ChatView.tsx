@@ -89,7 +89,18 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
   };
   
   return (
-    <div className="flex flex-col h-full">
+    <div className="relative flex flex-col h-full">
+    
+        {/* Watermark Background */}
+        <div
+          className="pointer-events-none select-none absolute inset-0 flex flex-col items-center justify-center opacity-70 rounded-full z-0"
+          
+        >
+          <LogoIcon className="w-24 h-24 text-slate-300 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-slate-700">Case Chat</h2>
+          <p className="text-slate-500">Clarify your legal questions and get assistance.</p>
+        </div>
+
       <div className="p-4 border-b border-slate-200 flex-shrink-0 flex items-center justify-between gap-2 min-h-[65px]">
         {isEditingTitle ? (
           <div className="flex-1 flex items-center gap-2">
@@ -127,7 +138,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
                 <LogoIcon className="w-5 h-5 text-purple-600" />
               </div>
             )}
-            <div className={`max-w-lg p-3 rounded-xl ${msg.role === 'user' ? 'bg-purple-600 text-white' : 'bg-slate-100 text-gray-800'}`}>
+            <div className={`max-w-lg p-3 rounded-xl z-10 ${msg.role === 'user' ? 'bg-purple-600 text-white' : 'bg-slate-100 text-gray-800'}`}>
               {/* Show image attachment indicator for user messages with images */}
               {msg.hasImage && (
                 <div className="flex items-center gap-2 mb-2 pb-2 border-b border-purple-400/30">

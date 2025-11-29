@@ -56,10 +56,21 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
 
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="relative flex flex-col h-full">
+
+    {/* Watermark Background */}
+    <div
+      className="pointer-events-none select-none absolute inset-0 flex flex-col items-center justify-center opacity-70 rounded-full z-0"
+      
+    >
+      <LogoIcon className="w-24 h-24 text-slate-300 mx-auto mb-4" />
+      <h2 className="text-xl font-semibold text-slate-700">Quick Chat</h2>
+      <p className="text-slate-500">Ask questions about any legal topic.</p>
+    </div>
+
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 ">
         {thread.messages.map((msg, i) => (
           <div
             key={i}
@@ -72,7 +83,7 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
             )}
 
             <div
-              className={`max-w-lg p-3 rounded-xl ${
+              className={`max-w-lg p-3 rounded-xl z-10 ${
                 msg.role === 'user'
                   ? 'bg-purple-600 text-white'
                   : 'bg-slate-100 text-gray-800'

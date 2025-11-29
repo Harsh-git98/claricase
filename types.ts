@@ -3,6 +3,7 @@ export interface User {
   googleId: string;
   name: string;
   email: string;
+  pro: boolean;
   picture: string;
 }
 
