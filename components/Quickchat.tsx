@@ -56,7 +56,7 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
 
 
   return (
-    <div className="relative flex flex-col h-full">
+    <div className="relative flex flex-col h-full bg-white/60 backdrop-blur-xl border border-white/40 shadow-lg shadow-purple-200/40 rounded-2xl overflow-hidden">
 
     {/* Watermark Background */}
     <div

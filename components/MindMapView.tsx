@@ -139,7 +139,7 @@ export const MindMapView: React.FC<{ mindMap: MindMap }> = ({ mindMap }) => {
   // ---- Render ----
   //
   return (
-    <div className="flex flex-col h-full" ref={containerRef}>
+    <div className="flex flex-col h-full bg-white/60 backdrop-blur-xl border border-white/40 shadow-lg shadow-purple-200/40 rounded-2xl overflow-hidden" ref={containerRef}>
       <div className="p-4 border-b border-slate-200">
         <h2 className="text-lg font-semibold">Mind Map</h2>
       </div>
