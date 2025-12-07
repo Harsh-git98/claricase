@@ -79,10 +79,36 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           </div>
         ) : (
           <nav className="border-t border-white/60 bg-white/70 backdrop-blur-xl">
-            <div className="flex justify-around">
-              <TabButton label="Chat" view="chat" activeView={activeView} onClick={setActiveView} />
-              <TabButton label="Summary" view="summary" activeView={activeView} onClick={setActiveView} />
-              <TabButton label="Mind Map" view="mindmap" activeView={activeView} onClick={setActiveView} />
+            <div className="flex">
+              <div className="flex-1 px-2 flex">
+                <div
+                  className={`flex-1 rounded-lg transition-transform duration-150 transform ${
+                    activeView === 'chat' ? '-translate-y-1 shadow-2xl' : 'hover:-translate-y-0.5 shadow-sm'
+                  } bg-white/60 backdrop-blur-sm border border-white/30`}
+                >
+                  <TabButton label="Chat" view="chat" activeView={activeView} onClick={setActiveView} />
+                </div>
+              </div>
+
+              <div className="flex-1 px-2 flex">
+                <div
+                  className={`flex-1 rounded-lg transition-transform duration-150 transform ${
+                    activeView === 'summary' ? '-translate-y-1 shadow-2xl' : 'hover:-translate-y-0.5 shadow-sm'
+                  } bg-white/60 backdrop-blur-sm border border-white/30`}
+                >
+                  <TabButton label="Summary" view="summary" activeView={activeView} onClick={setActiveView} />
+                </div>
+              </div>
+
+              <div className="flex-1 px-2 flex">
+                <div
+                  className={`flex-1 rounded-lg transition-transform duration-150 transform ${
+                    activeView === 'mindmap' ? '-translate-y-1 shadow-2xl' : 'hover:-translate-y-0.5 shadow-sm'
+                  } bg-white/60 backdrop-blur-sm border border-white/30`}
+                >
+                  <TabButton label="Mind Map" view="mindmap" activeView={activeView} onClick={setActiveView} />
+                </div>
+              </div>
             </div>
           </nav>
         )
