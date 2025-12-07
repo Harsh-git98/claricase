@@ -118,9 +118,9 @@ export const UseCasesSection: React.FC = () => {
                   ))}
                 </ul>
 
-                <div className="mt-6">
+                {/* <div className="mt-6">
                   <span className="inline-flex items-center text-sm font-medium text-purple-600 hover:underline">Explore details →</span>
-                </div>
+                </div> */}
               </div>
 
               {/* corner decorative */}

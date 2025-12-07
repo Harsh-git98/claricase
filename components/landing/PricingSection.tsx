@@ -32,7 +32,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin }) => {
   };
 
   return (
-    <section className="relative py-24 lg:py-32 overflow-hidden bg-white">
+    <section className="relative py-4 overflow-hidden bg-white">
       {/* animated massive blob */}
       <motion.div
         aria-hidden

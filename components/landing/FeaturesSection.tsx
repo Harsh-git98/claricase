@@ -86,7 +86,7 @@ export const FeaturesSection: React.FC = () => {
       <div className="relative container mx-auto px-6 lg:px-12">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-900 leading-tight">Why Choose ClariCase?</h2>
-          <p className="mt-3 max-w-2xl mx-auto text-lg text-gray-600">Everything you need to gain clarity on your legal case — now with immersive visual cues and micro-interactions for faster comprehension.</p>
+          <p className="mt-3 max-w-2xl mx-auto text-lg text-gray-600">Everything you need to gain clarity on your legal case, now with immersive visual cues and micro-interactions for faster comprehension.</p>
         </div>
 
         {/* Features grid - motion container */}
@@ -196,7 +196,7 @@ function FeatureCard({ feature, index }: { feature: FeatureItem; index: number }
       <p className="mt-3 text-sm text-gray-600 ml-2">{feature.description}</p>
 
       {/* CTA micro-interaction */}
-      <div className="mt-5 ml-2">
+      {/* <div className="mt-5 ml-2">
         <motion.button
           whileHover={{ x: 6 }}
           className="inline-flex items-center text-sm font-medium text-purple-600"
@@ -206,7 +206,7 @@ function FeatureCard({ feature, index }: { feature: FeatureItem; index: number }
             <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </motion.button>
-      </div>
+      </div> */}
 
     </motion.div>
   );

@@ -74,12 +74,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
       <main>
         <HeroSection onLogin={onLogin} />
         <FeaturesSection />
-        <HowItWorksSection />
-        <TestimonialsSection />
         <UseCasesSection />
-        <StatsSection />
+         <StatsSection />
+        {/* <HowItWorksSection /> */}
+        <TestimonialsSection />
         <PricingSection onLogin={onLogin} />
-        <TrustSection />
+        
       </main>
       <Footer />
     </div>
