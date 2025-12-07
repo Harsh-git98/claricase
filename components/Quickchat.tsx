@@ -56,7 +56,7 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
 
 
   return (
-    <div className="relative flex flex-col h-full bg-white/60 backdrop-blur-xl border border-white/40 shadow-lg shadow-purple-200/40 rounded-2xl overflow-hidden">
+    <div className="relative flex flex-col h-full bg-gradient-to-br from-white/75 via-purple-100/60 to-white/75 backdrop-blur-2xl border border-white/60 shadow-[0_20px_60px_-25px_rgba(109,40,217,0.35)] rounded-[26px] overflow-hidden">
 
     {/* Watermark Background */}
     <div
@@ -119,7 +119,7 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className="p-4 border-t border-purple-400 flex">
+      <form onSubmit={handleSubmit} className="p-4 border-t border-white/60 bg-gradient-to-r from-purple-100/80 via-purple-50 to-pink-100/70 flex">
         <textarea
           value={userInput}
           onChange={e => setUserInput(e.target.value)}

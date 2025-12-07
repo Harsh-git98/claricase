@@ -86,11 +86,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ></div>
       )}
       <aside
-        className={`fixed top-0 left-0 h-full bg-white/70 backdrop-blur-xl border-r border-white/40 shadow-xl shadow-purple-200/40 w-64 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out z-40 ${
+        className={`fixed top-0 left-0 h-full bg-gradient-to-b from-white/85 via-purple-50/70 to-white/80 backdrop-blur-xl border-r border-white/40 shadow-2xl shadow-purple-200/50 w-64 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out z-40 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-slate-200">
+        <div className="flex items-center justify-between p-4 border-b border-white/50 bg-gradient-to-r from-purple-50 to-pink-50">
           <div className="flex items-center space-x-2">
             <LogoIcon className="w-8 h-8 text-purple-600" />
             <span className="text-xl font-bold text-gray-800">ClariCase</span>

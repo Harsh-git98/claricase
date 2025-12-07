@@ -8,7 +8,7 @@ interface SummaryViewProps {
 
 export const SummaryView: React.FC<SummaryViewProps> = ({ summary, isLoading }) => {
   return (
-    <div className="relative flex flex-col h-full bg-white/60 backdrop-blur-xl border border-white/40 shadow-lg shadow-purple-200/40 rounded-2xl overflow-hidden">
+    <div className="relative flex flex-col h-full bg-gradient-to-br from-white/75 via-purple-100/60 to-white/75 backdrop-blur-2xl border border-white/60 shadow-[0_20px_60px_-25px_rgba(109,40,217,0.35)] rounded-[26px] overflow-hidden">
     
         {/* Watermark Background */}
         <div
@@ -19,7 +19,7 @@ export const SummaryView: React.FC<SummaryViewProps> = ({ summary, isLoading }) 
           <h2 className="text-xl font-semibold text-slate-700">Summary</h2>
           <p className="text-slate-500">Get a concise overview of your case details.</p>
         </div>
-      <div className="p-4 border-b border-slate-200 flex-shrink-0">
+      <div className="p-4 border-b border-white/60 bg-gradient-to-r from-purple-100/80 via-purple-50 to-pink-100/70 flex-shrink-0">
         <h2 className="text-lg font-semibold text-gray-800">Case Summary</h2>
       </div>
       <div className="flex-1 overflow-y-auto p-4">

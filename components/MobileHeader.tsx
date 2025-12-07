@@ -48,9 +48,9 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   isQuickChatOpen,
 }) => {
   return (
-    <header className="bg-white border-b border-slate-200 flex-shrink-0">
+    <header className="bg-gradient-to-r from-white/75 via-purple-100/60 to-white/75 backdrop-blur-2xl border-b border-white/60 shadow-[0_12px_40px_-20px_rgba(109,40,217,0.35)] flex-shrink-0">
       <div className="flex items-center justify-between p-4 h-16">
-          <button onClick={onToggleSidebar} className="p-1 text-slate-600">
+          <button onClick={onToggleSidebar} className="p-1 text-slate-600 hover:text-purple-700">
               <MenuIcon className="w-6 h-6" />
           </button>
           <div className="flex items-center space-x-2">
@@ -59,7 +59,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           </div>
           <div className="flex items-center gap-2">
             {onOpenNotes && (
-              <button onClick={onOpenNotes} title="Notes" className="p-2 rounded-md text-slate-600 hover:bg-slate-100 hover:text-purple-600 flex items-center justify-center">
+              <button onClick={onOpenNotes} title="Notes" className="p-2 rounded-md text-slate-600 hover:bg-white/70 hover:text-purple-600 flex items-center justify-center border border-white/60">
                 <DocumentTextIcon className="w-5 h-5" />
                 <p className="font-semibold ">Notes</p>
               </button>
@@ -71,14 +71,14 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
         // Show either the chat header (when quick chat is open or chat view active)
         // or the three-tab nav (when summary/mindmap active)
         (isQuickChatOpen) ? (
-          <div className="p-4 border-t border-slate-200 flex items-center justify-between">
+          <div className="p-4 border-t border-white/60 bg-gradient-to-r from-purple-50 to-pink-50 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h2 className="text-center font-semibold truncate">{activeThreadTitle}</h2>
             </div>
-            {onCloseThread && <button onClick={onCloseThread} className="flex items-center gap-2 text-red-400 border border-red-400 rounded-md px-2 py-1"><XIcon className="w-6 h-6"/>End Chat</button>}
+            {onCloseThread && <button onClick={onCloseThread} className="flex items-center gap-2 text-red-500 border border-red-300 bg-white/70 rounded-md px-2 py-1 hover:shadow-sm"><XIcon className="w-5 h-5"/>End Chat</button>}
           </div>
         ) : (
-          <nav className="border-t border-slate-200">
+          <nav className="border-t border-white/60 bg-white/70 backdrop-blur-xl">
             <div className="flex justify-around">
               <TabButton label="Chat" view="chat" activeView={activeView} onClick={setActiveView} />
               <TabButton label="Summary" view="summary" activeView={activeView} onClick={setActiveView} />

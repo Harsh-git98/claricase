@@ -405,7 +405,7 @@ setActiveThreadId(null);
   }
 
   return (
-    <div className="flex h-screen bg-slate-50 font-sans">
+    <div className="flex h-screen font-sans bg-gradient-to-br from-slate-50 via-purple-50/60 to-white">
       {/* Error Toast */}
       {errorMessage && (
         <div className="fixed top-4 right-4 z-50 max-w-md animate-slide-in">
