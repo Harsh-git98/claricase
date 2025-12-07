@@ -37,7 +37,7 @@ const TabButton: React.FC<{
   </button>
 );
 
-export const MobileHeader: React.FC<MobileHeaderProps> = ({ 
+export const MobileHeader: React.FC<MobileHeaderProps> = ({
   onToggleSidebar,
   activeView,
   setActiveView,
@@ -48,67 +48,72 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
   isQuickChatOpen,
 }) => {
   return (
-    <header className="bg-gradient-to-r from-white/75 via-purple-100/60 to-white/75 backdrop-blur-2xl border-b border-white/60 shadow-[0_12px_40px_-20px_rgba(109,40,217,0.35)] flex-shrink-0">
-      <div className="flex items-center justify-between p-4 h-16">
-          <button onClick={onToggleSidebar} className="p-1 text-slate-600 hover:text-purple-700">
-              <MenuIcon className="w-6 h-6" />
+    <header className="bg-white/80 backdrop-blur-xl border-b border-purple-200/40 flex-shrink-0">
+      {/* Top Bar */}
+      <div className="flex items-center justify-between px-4 h-16">
+        <button
+          onClick={onToggleSidebar}
+          className="p-2 rounded-md text-gray-700 hover:bg-gray-100"
+        >
+          <MenuIcon className="w-6 h-6" />
+        </button>
+
+        <div className="flex items-center gap-2">
+          <LogoIcon className="w-7 h-7 text-purple-600" />
+          <span className="font-bold text-lg text-gray-900">
+            ClariCase
+          </span>
+        </div>
+
+        {onOpenNotes && (
+          <button
+            onClick={onOpenNotes}
+            title="Notes"
+            className="p-2 rounded-md hover:bg-gray-100 text-gray-700"
+          >
+            <DocumentTextIcon className="w-6 h-6" />
           </button>
-          <div className="flex items-center space-x-2">
-              <LogoIcon className="w-7 h-7 text-purple-600" />
-              <span className="text-lg font-bold text-gray-800">ClariCase</span>
-          </div>
-          <div className="flex items-center gap-2">
-            {onOpenNotes && (
-              <button onClick={onOpenNotes} title="Notes" className="p-2 rounded-md text-slate-600 hover:bg-white/70 hover:text-purple-600 flex items-center justify-center border border-white/60">
-                <DocumentTextIcon className="w-5 h-5" />
-                <p className="font-semibold ">Notes</p>
+        )}
+      </div>
+
+      {/* Tabs OR Quick Chat Mode */}
+      {hasActiveThread && (
+        isQuickChatOpen ? (
+          <div className="px-4 py-3 border-t border-purple-200/40 flex items-center justify-between">
+            <h2 className="font-medium text-gray-900 truncate">
+              {activeThreadTitle}
+            </h2>
+            {onCloseThread && (
+              <button
+                onClick={onCloseThread}
+                className="text-red-500 hover:text-red-600"
+              >
+                <XIcon className="w-5 h-5" />
               </button>
             )}
           </div>
-      </div>
-
-      {hasActiveThread && (
-        // Show either the chat header (when quick chat is open or chat view active)
-        // or the three-tab nav (when summary/mindmap active)
-        (isQuickChatOpen) ? (
-          <div className="p-4 border-t border-white/60 bg-gradient-to-r from-purple-50 to-pink-50 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <h2 className="text-center font-semibold truncate">{activeThreadTitle}</h2>
-            </div>
-            {onCloseThread && <button onClick={onCloseThread} className="flex items-center gap-2 text-red-500 border border-red-300 bg-white/70 rounded-md px-2 py-1 hover:shadow-sm"><XIcon className="w-5 h-5"/>End Chat</button>}
-          </div>
         ) : (
-          <nav className="border-t border-white/60 bg-white/70 backdrop-blur-xl">
+          <nav className="border-t border-purple-200/40">
             <div className="flex">
-              <div className="flex-1 px-2 flex">
-                <div
-                  className={`flex-1 rounded-lg transition-transform duration-150 transform ${
-                    activeView === 'chat' ? '-translate-y-1 shadow-2xl' : 'hover:-translate-y-0.5 shadow-sm'
-                  } bg-white/60 backdrop-blur-sm border border-white/30`}
+              {(['chat', 'summary', 'mindmap'] as MobileView[]).map((view) => (
+                <button
+                  key={view}
+                  onClick={() => setActiveView(view)}
+                  className={`flex-1 py-3 text-sm font-medium tracking-wide
+                    ${
+                      activeView === view
+                        ? 'text-purple-700 border-b-2 border-purple-600'
+                        : 'text-gray-500 hover:text-purple-600'
+                    }
+                  `}
                 >
-                  <TabButton label="Chat" view="chat" activeView={activeView} onClick={setActiveView} />
-                </div>
-              </div>
-
-              <div className="flex-1 px-2 flex">
-                <div
-                  className={`flex-1 rounded-lg transition-transform duration-150 transform ${
-                    activeView === 'summary' ? '-translate-y-1 shadow-2xl' : 'hover:-translate-y-0.5 shadow-sm'
-                  } bg-white/60 backdrop-blur-sm border border-white/30`}
-                >
-                  <TabButton label="Summary" view="summary" activeView={activeView} onClick={setActiveView} />
-                </div>
-              </div>
-
-              <div className="flex-1 px-2 flex">
-                <div
-                  className={`flex-1 rounded-lg transition-transform duration-150 transform ${
-                    activeView === 'mindmap' ? '-translate-y-1 shadow-2xl' : 'hover:-translate-y-0.5 shadow-sm'
-                  } bg-white/60 backdrop-blur-sm border border-white/30`}
-                >
-                  <TabButton label="Mind Map" view="mindmap" activeView={activeView} onClick={setActiveView} />
-                </div>
-              </div>
+                  {view === 'chat'
+                    ? 'Chat'
+                    : view === 'summary'
+                    ? 'Summary'
+                    : 'Mind Map'}
+                </button>
+              ))}
             </div>
           </nav>
         )
@@ -116,3 +121,4 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
     </header>
   );
 };
+
