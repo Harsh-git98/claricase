@@ -119,21 +119,21 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className="p-4 border-t border-white/60 bg-gradient-to-r from-purple-100/80 via-purple-50 to-pink-100/70 flex">
+      <form onSubmit={handleSubmit} className="flex items-center space-x-2 p-4 border-t border-white/60 bg-gradient-to-r from-purple-100/80 via-purple-50 to-pink-100/70 flex w-full items-center space-x-2 backdrop-blur-md z-10">
         <textarea
           value={userInput}
           onChange={e => setUserInput(e.target.value)}
           placeholder="Ask your legal question…"
-          className="flex-1 p-2 border rounded-lg border-slate-800 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
+          className="flex-1 p-2 border w-4/5 rounded-lg border-slate-800 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
           rows={3}
         />
 
         <button
           type="submit"
           disabled={!userInput.trim()}
-          className="ml-2 p-2 rounded-full bg-purple-600 text-white w-auto h-auto"
+          className="p-2 rounded-full bg-purple-600 text-white hover:bg-purple-700 disabled:bg-purple-300"
         >
-          <SendIcon className="w-8 h-8" />
+          <SendIcon className="w-5 h-5" />
         </button>
       </form>
        <div className="flex items-center justify-end mt-2 height-4">

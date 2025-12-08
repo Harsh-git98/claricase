@@ -154,7 +154,7 @@ export default function PrivacyPolicyPopup({ onClose }) { // Added onClose prop 
             <section className="space-y-2 pb-6">
               <h2 className="text-xl font-semibold">14. Contact</h2>
               <p>
-                For questions, contact us at <strong>privacy@claricase.example</strong>.
+                For questions, contact us at <strong>claricase@hotmail.com</strong>.
               </p>
             </section>
         </div>

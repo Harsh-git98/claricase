@@ -40,36 +40,18 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                                   <span className="text-xl font-bold text-gray-800">ClariCase</span>
                               </a>
                           </div>
-                          <div className="hidden md:flex items-center space-x-8">
+                          <div className="md:flex items-center space-x-8">
                               <button
                                  onClick={() => { handleGoogleLogin(); setIsMenuOpen(false); }}
-                                  className="flex items-center justify-center space-x-2 bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors duration-200"
+                                  className="flex items-center justify-center space-x-2 bg-gradient-to-r from-indigo-500 via-purple-600 to-purple-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-200"
                               >
                                   <GoogleIcon className="w-5 h-5" />
                                   <span>Sign In</span>
                               </button>
                           </div>
-                          <div className="md:hidden flex items-center">
-                              <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 rounded-md text-gray-600 hover:bg-slate-100">
-                                  {isMenuOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
-                              </button>
-                          </div>
                       </div>
                   </div>
-                  {/* Mobile Menu */}
-                  {isMenuOpen && (
-                      <div className="md:hidden bg-slate-50 border-t border-slate-200">
-                          <div className="px-4 pt-2 pb-4">
-                              <button
-                                  onClick={() => { handleGoogleLogin(); setIsMenuOpen(false); }}
-                                  className="w-full flex items-center justify-center space-x-2 bg-purple-600 text-white font-semibold py-2.5 px-4 rounded-lg hover:bg-purple-700 transition-colors duration-200"
-                              >
-                                  <GoogleIcon className="w-5 h-5" />
-                                  <span>Sign in with Google</span>
-                              </button>
-                          </div>
-                      </div>
-                  )}
+                
               </header>
       <main>
         <HeroSection onLogin={onLogin} />

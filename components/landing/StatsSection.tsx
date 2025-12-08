@@ -29,7 +29,7 @@ const AnimatedNumber = ({ target }: { target: number }) => {
 
 export const StatsSection: React.FC = () => {
   return (
-    <section className="py-20 lg:py-28 bg-gradient-to-br from-purple-600 to-purple-800 text-white relative overflow-hidden">
+    <section className="py-20 lg:py-28 bg-gradient-to-br from-indigo-600 to-purple-800 via-purple-800 text-white relative overflow-hidden">
       {/* background grid */}
       <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(to_bottom,white_10%,transparent_90%)]"></div>
 

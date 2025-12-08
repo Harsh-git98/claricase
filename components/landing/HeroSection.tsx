@@ -110,7 +110,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLogin }) => {
             whileHover={{ y: -4, scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 200, damping: 12 }}
-            className="relative group bg-purple-600 text-white font-semibold py-3 px-10 rounded-xl text-lg shadow-xl shadow-purple-500/30 hover:bg-purple-700 transition-all"
+            className="relative group bg-gradient-to-br from-indigo-500 to-purple-600  text-white font-semibold py-3 px-10 rounded-xl text-lg shadow-xl shadow-purple-500/30 hover:bg-purple-700 transition-all"
           >
             <div className="absolute inset-0 rounded-xl bg-purple-400 opacity-0 group-hover:opacity-20 blur-xl transition" />
             Get Started for Free
