@@ -9,6 +9,9 @@ import { PencilIcon } from './icons/PencilIcon';
 import { CheckIcon } from './icons/CheckIcon';
 import { XIcon } from './icons/XIcon';
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 interface ChatViewProps {
   thread: CaseThread;
   onSendMessage: (userInput: string, imageBase64: string | null, isThinkingMode: boolean) => void;
@@ -48,24 +51,16 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // If nothing typed AND no file → do nothing
     if (!userInput.trim() && !attachedImage) return;
 
-    // Auto-generate default message if only image/PDF is uploaded
     let finalUserInput = userInput.trim();
-
     if (!finalUserInput && attachedImage) {
-      const fileType = attachedImage.file.type;
-      if (fileType === "application/pdf") {
-        finalUserInput = "Analyze this PDF";
-      } else {
-        finalUserInput = "Analyze this image";
-      }
+      finalUserInput = attachedImage.file.type === "application/pdf"
+        ? "Analyze this PDF"
+        : "Analyze this image";
     }
 
     onSendMessage(finalUserInput, attachedImage?.base64 || null, isThinkingMode);
-
     setUserInput('');
     setAttachedImage(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -79,9 +74,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
   };
 
   const handleTitleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleTitleSave();
-    }
+    if (e.key === 'Enter') handleTitleSave();
     if (e.key === 'Escape') {
       setTitleInput(thread.title);
       setIsEditingTitle(false);
@@ -91,16 +84,16 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
   return (
     <div className="relative flex flex-col h-full bg-gradient-to-br from-white/75 via-purple-100/60 to-white/75 backdrop-blur-2xl border border-white/60 shadow-[0_20px_60px_-25px_rgba(109,40,217,0.35)] rounded-[26px] overflow-hidden">
     
-        {/* Watermark Background */}
-        <div
-          className="pointer-events-none select-none absolute inset-0 flex flex-col items-center justify-center opacity-70 rounded-full z-0"
-          
-        >
+      {/* Watermark */}    
+      {thread.messages.length === 0 && (
+        <div className="pointer-events-none select-none absolute inset-0 flex flex-col items-center justify-center opacity-30 -z-10">
           <LogoIcon className="w-24 h-24 text-slate-300 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-slate-700">Case Chat</h2>
           <p className="text-slate-500">Clarify your legal questions and get assistance.</p>
         </div>
+      )}
 
+      {/* Title Bar */}
       <div className="p-4 border-b border-white/60 bg-gradient-to-r from-purple-100/80 via-purple-50 to-pink-100/70 flex-shrink-0 flex items-center justify-between gap-2 min-h-[65px]">
         {isEditingTitle ? (
           <div className="flex-1 flex items-center gap-2">
@@ -109,7 +102,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
               value={titleInput}
               onChange={(e) => setTitleInput(e.target.value)}
               onKeyDown={handleTitleKeyDown}
-              className="w-full text-lg font-semibold text-gray-800 bg-slate-100 rounded-md p-1 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+              className="w-full text-lg font-semibold text-gray-800 bg-slate-100 rounded-md p-1 focus:ring-2 focus:ring-purple-500"
               autoFocus
               onBlur={handleTitleSave}
             />
@@ -122,14 +115,15 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
           </div>
         ) : (
           <div className="flex items-center gap-2 group min-w-0">
-            <h2 className="text-lg font-semibold text-gray-800 truncate" title={thread.title}>{thread.title}</h2>
-            <button onClick={() => setIsEditingTitle(true)} className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity p-1 text-slate-500 hover:text-slate-800 flex-shrink-0">
+            <h2 className="text-lg font-semibold text-gray-800 truncate">{thread.title}</h2>
+            <button onClick={() => setIsEditingTitle(true)} className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-slate-500 hover:text-slate-800">
               <PencilIcon className="w-4 h-4" />
             </button>
           </div>
         )}
       </div>
       
+      {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {thread.messages.map((msg, index) => (
           <div key={index} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
@@ -138,16 +132,24 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
                 <LogoIcon className="w-5 h-5 text-purple-600" />
               </div>
             )}
-            <div className={`max-w-lg p-3 rounded-xl z-10 ${msg.role === 'user' ? 'bg-purple-600 text-white' : 'bg-slate-100 text-gray-800'}`}>
-              {/* Show image attachment indicator for user messages with images */}
+
+            <div className={`max-w-lg p-3 rounded-xl z-10 ${
+              msg.role === 'user' ? 'bg-slate-100 text-gray-800' : 'bg-purple-600 text-white prose prose-sm prose-invert'
+            }`}>
               {msg.hasImage && (
                 <div className="flex items-center gap-2 mb-2 pb-2 border-b border-purple-400/30">
                   <PaperclipIcon className="w-4 h-4" />
                   <span className="text-xs opacity-90">Image attached</span>
                 </div>
               )}
-              <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+
+              {/* MARKDOWN RENDER */}
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {msg.content}
+              </ReactMarkdown>
+
             </div>
+
             {msg.role === 'user' && (
               <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center flex-shrink-0">
                 <UserIcon className="w-5 h-5 text-slate-600" />
@@ -155,6 +157,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
             )}
           </div>
         ))}
+
         {isLoading && (
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
@@ -172,13 +175,15 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
         <div ref={messagesEndRef} />
       </div>
       
+      {/* Input */}
       <div className="p-4 border-t border-purple-600 flex-shrink-0">
         {attachedImage && (
           <div className="mb-2 p-2 bg-slate-100 rounded-md text-sm flex justify-between items-center">
             <span className="truncate">{attachedImage.file.name}</span>
-            <button onClick={() => setAttachedImage(null)} className="text-red-500 hover:text-red-700 font-bold ml-2">&times;</button>
+            <button onClick={() => setAttachedImage(null)} className="text-red-500 hover:text-red-700 ml-2 font-bold">&times;</button>
           </div>
         )}
+
         <form onSubmit={handleSubmit} className="flex items-center space-x-2">
           <input 
             type="file" 
@@ -187,13 +192,11 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
             accept="image/*,application/pdf" 
             className="hidden" 
           />
-          <button 
-            type="button" 
-            onClick={() => fileInputRef.current?.click()} 
-            className="p-2 rounded-full text-slate-500 hover:bg-slate-100"
-          >
+
+          <button type="button" onClick={() => fileInputRef.current?.click()} className="p-2 rounded-full text-slate-500 hover:bg-slate-100">
             <PaperclipIcon className="w-5 h-5" />
           </button>
+
           <textarea
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
@@ -204,23 +207,21 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
               }
             }}
             placeholder="Type your message or upload a file..."
-            className="flex-1 p-2 border border-slate-800 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
+            className="flex-1 p-2 border border-slate-800 rounded-lg focus:ring-2 focus:ring-purple-500 resize-none"
             rows={2}
             disabled={isLoading}
           />
+
           <button 
-            type="submit" 
-            className="p-2 rounded-full bg-purple-600 text-white hover:bg-purple-700 disabled:bg-purple-300" 
+            type="submit"
             disabled={isLoading || (!userInput.trim() && !attachedImage)}
+            className="p-2 rounded-full bg-purple-600 text-white hover:bg-purple-700 disabled:bg-purple-300"
           >
             <SendIcon className="w-5 h-5" />
           </button>
         </form>
-        <div className="flex items-center justify-end mt-2 height-4">
-          <label htmlFor="thinking-mode" className="flex items-center cursor-pointer">
-          </label>
-        </div>
       </div>
+
     </div>
   );
 };

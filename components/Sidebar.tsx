@@ -179,15 +179,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <p className="font-semibold text-sm text-gray-800 truncate">
                   {user.name}
                 </p>
-                <p className="text-xs text-gray-500 truncate">{user.email}</p>
               </div>
             </div>
             <button
               onClick={onLogout}
-              className="p-2 rounded-md text-gray-500 hover:bg-slate-100 hover:text-red-600 flex-shrink-0"
+              className="p-2 rounded-md text-gray-500 hover:bg-slate-100 hover:text-red-600 flex-shrink-0 flex flex-col items-center"
               title="Logout"
             >
-              <LogoutIcon className="w-5 h-5" />
+              <LogoutIcon className="w-5 h-5 text-red-600" />
+               <p className="text-xs text-red-600 truncate">log Out</p>
             </button>
           </div>
         </div>

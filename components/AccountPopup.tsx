@@ -6,6 +6,7 @@ interface AccountPopupProps {
     name: string;
     email: string;
     picture: string;
+    pro: boolean;
   };
   onClose: () => void;
 }
@@ -40,6 +41,15 @@ export const AccountPopup: React.FC<AccountPopupProps> = ({ user, onClose }) => 
 
           <p className="text-md font-semibold text-gray-800">{user.name}</p>
           <p className="text-sm text-gray-600">{user.email}</p>
+          if (user?.pro) {
+          <span className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full">
+            Pro User
+          </span>
+          } else {
+          <span className="px-3 py-1 bg-green-200 text-gray-800 text-sm rounded-full">
+            Free User
+          </span>
+          }
         </div>
 
         <div className="mt-6 space-y-3">
@@ -47,10 +57,10 @@ export const AccountPopup: React.FC<AccountPopupProps> = ({ user, onClose }) => 
             Contact Sales
           </button>
 
-          <button className="w-full py-2 px-4 border rounded-lg text-gray-700 hover:bg-red-100 transition" onClick={() => window.location.href = "mailto:claricase@hotmail.com?subject=Help%20%26%20Support%20-%20ClariCase&body=Hello%20ClariCase%20Team,%0D%0A%0D%0AI%20need%20assistance%20with%20ClariCase.%20Please%20help%20me%20with%20my%20issue.%0D%0A%0D%0AThank%20you%2C%0D%0A"}>
+          <button className="w-full py-2 px-4 border rounded-lg text-gray-700 hover:bg-gray-100 transition" onClick={() => window.location.href = "mailto:claricase@hotmail.com?subject=Help%20%26%20Support%20-%20ClariCase&body=Hello%20ClariCase%20Team,%0D%0A%0D%0AI%20need%20assistance%20with%20ClariCase.%20Please%20help%20me%20with%20my%20issue.%0D%0A%0D%0AThank%20you%2C%0D%0A"}>
             Feedback / Support
           </button>
-          <button className="w-full py-2 px-4 border rounded-lg text-red-700 hover:bg-gray-100 transition" onClick={() => window.location.href =
+          <button className="w-full py-2 px-4 border rounded-lg text-red-700 hover:bg-red-300 transition" onClick={() => window.location.href =
   "mailto:claricase@hotmail.com?subject=Account%20Deletion%20Request%20-%20ClariCase&body=Hello%20ClariCase%20Team,%0D%0A%0D%0AI%20would%20like%20to%20request%20deletion%20of%20my%20account.%20Please%20help%20me%20with%20the%20process.%0D%0A%0D%0AThank%20you%2C%0D%0A"}>
             Delete My Account
           </button>

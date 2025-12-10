@@ -3,6 +3,8 @@ import { CaseThread } from '../types';
 import { SendIcon } from './icons/SendIcon';
 import { LogoIcon } from './icons/LogoIcon';
 import { UserIcon } from './icons/UserIcon';
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface ChatViewProps {
   thread: CaseThread;
@@ -17,7 +19,6 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
   thread,
   onSendMessage,
   isLoading,
-  onUpdateTitle,
 }) => {
 
   const [userInput, setUserInput] = useState('');
@@ -27,7 +28,6 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom whenever messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [thread.messages, isLoading]);
@@ -50,32 +50,24 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  useEffect(() => {
-  messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-}, [thread.messages, isLoading]);
-
-
   return (
-    <div className="relative flex flex-col h-full bg-gradient-to-br from-white/75 via-purple-100/60 to-white/75 backdrop-blur-2xl border border-white/60 shadow-[0_20px_60px_-25px_rgba(109,40,217,0.35)] rounded-[26px] overflow-hidden">
+    <div className="relative flex flex-col h-full bg-gradient-to-br from-white/75 via-purple-100/60 to-white/75
+        backdrop-blur-2xl border border-white/60 shadow-[0_20px_60px_-25px_rgba(109,40,217,0.35)]
+        rounded-[26px] overflow-hidden">
 
-    {/* Watermark Background */}
-    <div
-      className="pointer-events-none select-none absolute inset-0 flex flex-col items-center justify-center opacity-70 rounded-full z-0"
-      
-    >
-      <LogoIcon className="w-24 h-24 text-slate-300 mx-auto mb-4" />
-      <h2 className="text-xl font-semibold text-slate-700">Quick Chat</h2>
-      <p className="text-slate-500">Ask questions about any legal topic.</p>
-    </div>
+      {/* Watermark Background */}
+      {thread.messages.length === 0 && (
+        <div className="pointer-events-none select-none absolute inset-0 flex flex-col items-center justify-center opacity-30 -z-10">
+          <LogoIcon className="w-24 h-24 text-slate-300 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-slate-700">Quick Chat</h2>
+          <p className="text-slate-500">Ask questions about any legal topic.</p>
+        </div>
+      )}
 
-
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 ">
+      {/* Messages Display */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {thread.messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}
-          >
+          <div key={i} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
             {msg.role === "assistant" && (
               <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
                 <LogoIcon className="w-5 h-5 text-purple-600" />
@@ -83,13 +75,15 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
             )}
 
             <div
-              className={`max-w-lg p-3 rounded-xl z-10 ${
+              className={`max-w-lg p-3 rounded-xl relative z-20 prose prose-sm max-w-none ${
                 msg.role === 'user'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-slate-100 text-gray-800'
+                  ? 'bg-slate-100 text-gray-800'
+                  : 'bg-purple-600 prose-invert text-white'
               }`}
             >
-              <p className="whitespace-pre-wrap text-sm">{msg.content}</p>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {msg.content}
+              </ReactMarkdown>
             </div>
 
             {msg.role === "user" && (
@@ -105,6 +99,7 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
             <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
               <LogoIcon className="w-5 h-5 text-purple-600" />
             </div>
+
             <div className="max-w-lg p-3 rounded-lg bg-slate-100 text-gray-800">
               <div className="flex space-x-1">
                 <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></div>
@@ -118,13 +113,16 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
-      <form onSubmit={handleSubmit} className="flex items-center space-x-2 p-4 border-t border-white/60 bg-gradient-to-r from-purple-100/80 via-purple-50 to-pink-100/70 flex w-full items-center space-x-2 backdrop-blur-md z-10">
+      {/* Input Section */}
+      <form onSubmit={handleSubmit} className="flex items-center space-x-2 p-4 border-t border-white/60 bg-gradient-to-r
+        from-purple-100/80 via-purple-50 to-pink-100/70 backdrop-blur-md z-10">
+        
         <textarea
           value={userInput}
           onChange={e => setUserInput(e.target.value)}
           placeholder="Ask your legal question…"
-          className="flex-1 p-2 border w-4/5 rounded-lg border-slate-800 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-none"
+          className="flex-1 p-2 border rounded-lg border-slate-800 focus:ring-2 focus:ring-purple-500
+            focus:border-purple-500 resize-none"
           rows={3}
         />
 
@@ -136,10 +134,7 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
           <SendIcon className="w-5 h-5" />
         </button>
       </form>
-       <div className="flex items-center justify-end mt-2 height-4">
-          <label htmlFor="thinking-mode" className="flex items-center cursor-pointer">
-          </label>
-        </div>
+
     </div>
   );
 };
