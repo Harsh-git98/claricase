@@ -86,7 +86,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
             {onCloseThread && (
               <button
                 onClick={onCloseThread}
-                className="text-red-500 hover:text-red-600"
+                className="text-red-500 hover:text-red-600 flex flex-row items-center gap-1"
               >
                 <p className='text-red-600 font-semibold'>Close</p>
                 <XIcon className="w-5 h-5" />

@@ -175,15 +175,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 alt={user.name}
                 className="w-10 h-10 rounded-full"
               />
-              <div className="min-w-0 cursor-pointer"  onClick={() => setIsAccountPopupOpen(true)}>
+              <div className="min-w-0 cursor-pointer hover:bg-gray-300"  onClick={() => setIsAccountPopupOpen(true)}>
                 <p className="font-semibold text-sm text-gray-800 truncate">
-                  {user.name}
+                  Account
                 </p>
               </div>
             </div>
             <button
               onClick={onLogout}
-              className="p-2 rounded-md text-gray-500 hover:bg-slate-100 hover:text-red-600 flex-shrink-0 flex flex-col items-center"
+              className="p-2 rounded-md text-gray-500 hover:bg-red-200 hover:text-red-600 flex-shrink-0 flex flex-col items-center"
               title="Logout"
             >
               <LogoutIcon className="w-5 h-5 text-red-600" />

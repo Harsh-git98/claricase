@@ -85,7 +85,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
     <div className="relative flex flex-col h-full bg-gradient-to-br from-white/75 via-purple-100/60 to-white/75 backdrop-blur-2xl border border-white/60 shadow-[0_20px_60px_-25px_rgba(109,40,217,0.35)] rounded-[26px] overflow-hidden">
     
       {/* Watermark */}    
-      {thread.messages.length === 0 && (
+      {thread.messages.length <= 1 && (
         <div className="pointer-events-none select-none absolute inset-0 flex flex-col items-center justify-center opacity-30 -z-10">
           <LogoIcon className="w-24 h-24 text-slate-300 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-slate-700">Case Chat</h2>
@@ -127,14 +127,14 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {thread.messages.map((msg, index) => (
           <div key={index} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
-            {msg.role === 'assistant' && (
+            {/* {msg.role === 'assistant' && (
               <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
                 <LogoIcon className="w-5 h-5 text-purple-600" />
               </div>
-            )}
+            )} */}
 
             <div className={`max-w-lg p-3 rounded-xl z-10 ${
-              msg.role === 'user' ? 'bg-slate-100 text-gray-800' : 'bg-purple-600 text-white prose prose-sm prose-invert'
+              msg.role === 'user' ? 'bg-slate-300 text-gray-900' : 'bg-purple-300 text-white prose prose-sm prose-invert'
             }`}>
               {msg.hasImage && (
                 <div className="flex items-center gap-2 mb-2 pb-2 border-b border-purple-400/30">

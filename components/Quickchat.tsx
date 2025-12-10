@@ -68,11 +68,11 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {thread.messages.map((msg, i) => (
           <div key={i} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
-            {msg.role === "assistant" && (
+            {/* {msg.role === "assistant" && (
               <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
                 <LogoIcon className="w-5 h-5 text-purple-600" />
               </div>
-            )}
+            )} */}
 
             <div
               className={`max-w-lg p-3 rounded-xl relative z-20 prose prose-sm max-w-none ${

@@ -40,16 +40,15 @@ export const AccountPopup: React.FC<AccountPopupProps> = ({ user, onClose }) => 
           />
 
           <p className="text-md font-semibold text-gray-800">{user.name}</p>
-          <p className="text-sm text-gray-600">{user.email}</p>
-          if (user?.pro) {
-          <span className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full">
-            Pro User
-          </span>
-          } else {
-          <span className="px-3 py-1 bg-green-200 text-gray-800 text-sm rounded-full">
-            Free User
-          </span>
-          }
+          {user?.pro ? (
+            <span className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full">
+              Pro User
+            </span>
+          ) : (
+            <span className="px-3 py-1 bg-green-200 text-gray-800 text-sm rounded-full">
+              Free User
+            </span>
+          )}
         </div>
 
         <div className="mt-6 space-y-3">
