@@ -134,7 +134,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
             )} */}
 
             <div className={`max-w-lg p-3 rounded-xl z-10 ${
-              msg.role === 'user' ? 'bg-slate-300 text-gray-900' : 'bg-purple-300 text-white prose prose-sm prose-invert'
+              msg.role === 'user' ? 'bg-slate-300 text-gray-900' : 'bg-purple-600 text-white prose prose-sm prose-invert'
             }`}>
               {msg.hasImage && (
                 <div className="flex items-center gap-2 mb-2 pb-2 border-b border-purple-400/30">
