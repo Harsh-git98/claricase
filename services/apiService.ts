@@ -2,31 +2,62 @@ import { Message, GeminiResponse, User, CaseThread, Note } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://reprompttserver.onrender.com/lawxora';
 
-// Image compression utility
-const compressImage = async (base64: string, maxWidth = 1024, quality = 0.8): Promise<string> => {
+// ==================== FILE PROCESSING UTILITIES ====================
+
+interface ProcessedFile {
+  type: 'image' | 'pdf' | 'document';
+  base64: string;
+  mimeType: string;
+  size: number;
+}
+
+// Enhanced image compression with quality preservation
+const compressImage = async (
+  base64: string, 
+  maxWidth = 1024, 
+  quality = 0.8,
+  format: 'jpeg' | 'png' = 'jpeg'
+): Promise<string> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
       let { width, height } = img;
       
+      // Calculate optimal dimensions
+      const aspectRatio = width / height;
       if (width > maxWidth) {
-        height = (height * maxWidth) / width;
         width = maxWidth;
+        height = maxWidth / aspectRatio;
+      }
+      if (height > maxWidth) {
+        height = maxWidth;
+        width = maxWidth * aspectRatio;
       }
       
       canvas.width = width;
       canvas.height = height;
       
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', { alpha: format === 'png' });
       if (!ctx) {
         reject(new Error('Failed to get canvas context'));
         return;
       }
       
+      // Enable image smoothing for better quality
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      
+      // White background for JPEG
+      if (format === 'jpeg') {
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, width, height);
+      }
+      
       ctx.drawImage(img, 0, 0, width, height);
       
-      const compressed = canvas.toDataURL('image/jpeg', quality);
+      const mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
+      const compressed = canvas.toDataURL(mimeType, quality);
       resolve(compressed.split(',')[1]);
     };
     
@@ -35,7 +66,144 @@ const compressImage = async (base64: string, maxWidth = 1024, quality = 0.8): Pr
   });
 };
 
-// Helper function for API calls with credentials
+// Process PDF files - extract text or send as-is
+const processPDF = async (file: File): Promise<ProcessedFile> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = (e.target?.result as string).split(',')[1];
+      const size = Math.round(base64.length / 1024);
+      
+      console.log(`PDF size: ${size}KB`);
+      
+      // PDFs over 5MB should be warned
+      if (size > 5 * 1024) {
+        reject(new Error('PDF too large. Please use files under 5MB.'));
+        return;
+      }
+      
+      resolve({
+        type: 'pdf',
+        base64,
+        mimeType: 'application/pdf',
+        size
+      });
+    };
+    reader.onerror = () => reject(new Error('Failed to read PDF'));
+    reader.readAsDataURL(file);
+  });
+};
+
+// Process Word documents (.doc, .docx)
+const processDocument = async (file: File): Promise<ProcessedFile> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = (e.target?.result as string).split(',')[1];
+      const size = Math.round(base64.length / 1024);
+      
+      console.log(`Document size: ${size}KB`);
+      
+      if (size > 10 * 1024) {
+        reject(new Error('Document too large. Please use files under 10MB.'));
+        return;
+      }
+      
+      resolve({
+        type: 'document',
+        base64,
+        mimeType: file.type,
+        size
+      });
+    };
+    reader.onerror = () => reject(new Error('Failed to read document'));
+    reader.readAsDataURL(file);
+  });
+};
+
+// Universal file processor
+export const processFile = async (file: File): Promise<ProcessedFile> => {
+  const fileType = file.type.toLowerCase();
+  const fileName = file.name.toLowerCase();
+  
+  console.log('Processing file:', fileName, fileType);
+  
+  // Image files
+  if (fileType.startsWith('image/')) {
+    const reader = new FileReader();
+    const base64Promise = new Promise<string>((resolve, reject) => {
+      reader.onload = (e) => resolve((e.target?.result as string).split(',')[1]);
+      reader.onerror = () => reject(new Error('Failed to read image'));
+      reader.readAsDataURL(file);
+    });
+    
+    const base64 = await base64Promise;
+    const format = fileType.includes('png') ? 'png' : 'jpeg';
+    
+    // Intelligent compression based on file size
+    let compressed = base64;
+    const originalSize = Math.round(base64.length / 1024);
+    
+    console.log(`Original image size: ${originalSize}KB`);
+    
+    if (originalSize > 2048) { // > 2MB
+      compressed = await compressImage(base64, 1024, 0.7, format);
+    } else if (originalSize > 1024) { // > 1MB
+      compressed = await compressImage(base64, 1400, 0.8, format);
+    } else if (originalSize > 512) { // > 512KB
+      compressed = await compressImage(base64, 1600, 0.85, format);
+    }
+    
+    const finalSize = Math.round(compressed.length / 1024);
+    console.log(`Compressed image size: ${finalSize}KB`);
+    
+    return {
+      type: 'image',
+      base64: compressed,
+      mimeType: `image/${format}`,
+      size: finalSize
+    };
+  }
+  
+  // PDF files
+  if (fileType === 'application/pdf' || fileName.endsWith('.pdf')) {
+    return processPDF(file);
+  }
+  
+  // Word documents
+  if (
+    fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+    fileType === 'application/msword' ||
+    fileName.endsWith('.docx') ||
+    fileName.endsWith('.doc')
+  ) {
+    return processDocument(file);
+  }
+  
+  // Text files
+  if (fileType.startsWith('text/') || fileName.endsWith('.txt')) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
+        const base64 = btoa(unescape(encodeURIComponent(text)));
+        resolve({
+          type: 'document',
+          base64,
+          mimeType: 'text/plain',
+          size: Math.round(base64.length / 1024)
+        });
+      };
+      reader.onerror = () => reject(new Error('Failed to read text file'));
+      reader.readAsText(file);
+    });
+  }
+  
+  throw new Error(`Unsupported file type: ${fileType || 'unknown'}. Supported: images, PDFs, Word documents, text files.`);
+};
+
+// ==================== API HELPER ====================
+
 const apiCall = async (endpoint: string, options: RequestInit = {}, timeout = 120000) => {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -97,32 +265,14 @@ export const logout = async (): Promise<void> => {
 export const processUserTurn = async (
   history: Message[],
   userInput: string,
-  imageBase64: string | null,
+  fileData: ProcessedFile | null,
   isThinkingMode: boolean
 ): Promise<GeminiResponse> => {
   if (!userInput || userInput.trim() === "") {
     throw new Error("Message cannot be empty");
   }
 
-  let optimizedImage = imageBase64;
-  
-  if (imageBase64) {
-    try {
-      console.log('Original image size:', Math.round(imageBase64.length / 1024), 'KB');
-      optimizedImage = await compressImage(imageBase64, 1024, 0.7);
-      console.log('Compressed image size:', Math.round(optimizedImage.length / 1024), 'KB');
-      
-      if (optimizedImage.length > 2 * 1024 * 1024) {
-        console.log('Image still large, compressing further...');
-        optimizedImage = await compressImage(imageBase64, 800, 0.5);
-        console.log('Final image size:', Math.round(optimizedImage.length / 1024), 'KB');
-      }
-    } catch (error) {
-      console.error('Image compression failed:', error);
-      throw new Error('Failed to process image. Please try a smaller image.');
-    }
-  }
-
+  // Prepare history (last 20 messages, truncated)
   const recentHistory = history.slice(-20).map(msg => ({
     role: msg.role,
     content: typeof msg.content === 'string' 
@@ -133,7 +283,11 @@ export const processUserTurn = async (
   const payload = {
     history: recentHistory,
     userInput: userInput.trim().substring(0, 5000),
-    imageBase64: optimizedImage,
+    fileData: fileData ? {
+      type: fileData.type,
+      base64: fileData.base64,
+      mimeType: fileData.mimeType
+    } : null,
     isThinkingMode,
   };
 
@@ -143,17 +297,17 @@ export const processUserTurn = async (
   
   console.log('Payload breakdown:');
   console.log('- History entries:', recentHistory.length);
-  console.log('- Image included:', !!optimizedImage);
+  console.log('- File included:', fileData ? `${fileData.type} (${fileData.size}KB)` : 'none');
   console.log('- Total size:', Math.round(payloadSize / 1024), 'KB', `(${payloadMB.toFixed(2)}MB)`);
   
   if (payloadMB > 45) {
-    throw new Error(`Payload too large (${payloadMB.toFixed(2)}MB). Please start a new case or use a smaller image.`);
+    throw new Error(`Payload too large (${payloadMB.toFixed(2)}MB). Please start a new case or use a smaller file.`);
   }
 
   return apiCall('/api/process-message', {
     method: 'POST',
     body: payloadStr,
-  }, 120000);
+  }, 150000); // 150s timeout for large files
 };
 
 // ==================== QUICKCHAT SERVICES ====================
@@ -161,27 +315,11 @@ export const processUserTurn = async (
 export const processQuickChatMessage = async (
   history: Message[],
   userInput: string,
-  imageBase64: string | null,
+  fileData: ProcessedFile | null,
   isThinkingMode: boolean
 ): Promise<GeminiResponse> => {
   if (!userInput || userInput.trim() === "") {
     throw new Error("Message cannot be empty");
-  }
-
-  let optimizedImage = imageBase64;
-  
-  if (imageBase64) {
-    try {
-      // Use more aggressive compression for QuickChat (5MB limit)
-      optimizedImage = await compressImage(imageBase64, 800, 0.6);
-      
-      if (optimizedImage.length > 1024 * 1024) {
-        optimizedImage = await compressImage(imageBase64, 600, 0.4);
-      }
-    } catch (error) {
-      console.error('Image compression failed:', error);
-      throw new Error('Failed to process image. Please try a smaller image.');
-    }
   }
 
   const recentHistory = history.slice(-10).map(msg => ({
@@ -194,11 +332,14 @@ export const processQuickChatMessage = async (
   const payload = {
     history: recentHistory,
     userInput: userInput.trim().substring(0, 2000),
-    imageBase64: optimizedImage,
+    fileData: fileData ? {
+      type: fileData.type,
+      base64: fileData.base64,
+      mimeType: fileData.mimeType
+    } : null,
     isThinkingMode,
   };
 
-  // No authentication required for QuickChat
   return apiCall('/api/quickchat', {
     method: 'POST',
     body: JSON.stringify(payload),

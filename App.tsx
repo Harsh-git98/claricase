@@ -304,93 +304,111 @@ setActiveThreadId(null);
 
   
 
-  const handleSendMessage = async (userInput: string, imageBase64: string | null, isThinkingMode: boolean) => {
-    if (!activeThread || !activeThreadId) return;
+  // Update the handleSendMessage function in your App.tsx
 
-    // Validate input
-    if (!userInput.trim()) {
-      setErrorMessage("Message cannot be empty");
-      return;
-    }
+interface ProcessedFile {
+  type: 'image' | 'pdf' | 'document';
+  base64: string;
+  mimeType: string;
+  size: number;
+}
 
-    // Clear any previous errors
-    setErrorMessage(null);
+const handleSendMessage = async (
+  userInput: string, 
+  fileData: ProcessedFile | null, 
+  isThinkingMode: boolean
+) => {
+  if (!activeThread || !activeThreadId) return;
 
-    // Create user message - don't store base64 image, just a flag
-    const userMessage: Message = {
-      role: 'user',
-      content: userInput.trim(),
+  // Validate input
+  if (!userInput.trim() && !fileData) {
+    setErrorMessage("Please provide a message or attach a file");
+    return;
+  }
+
+  // Clear any previous errors
+  setErrorMessage(null);
+
+  // Create user message
+  const userMessage: Message = {
+    role: 'user',
+    content: userInput.trim() || `Analyzing ${fileData?.type}...`,
+    timestamp: new Date().toISOString(),
+    hasImage: !!fileData,
+  };
+  
+  const updatedMessages = [...activeThread.messages, userMessage];
+  const updatedThread = { ...activeThread, messages: updatedMessages };
+
+  // Optimistically update UI
+  setThreads(threads.map(t => t.id === activeThreadId ? updatedThread : t));
+  
+  setIsLoading(true);
+
+  try {
+    // Send to API with file data
+    const geminiResponse = await processUserTurn(
+      updatedMessages,
+      userInput.trim() || `Please analyze this ${fileData?.type}`,
+      fileData,
+      isThinkingMode
+    );
+    
+    const assistantMessage: Message = {
+      role: 'assistant',
+      content: geminiResponse.chatResponse,
       timestamp: new Date().toISOString(),
-      hasImage: !!imageBase64,
+    };
+
+    const finalThread: CaseThread = {
+      ...updatedThread,
+      messages: [...updatedMessages, assistantMessage],
+      summary: geminiResponse.summary,
+      mindMap: geminiResponse.mindMap,
+    };
+
+    await updateThread(activeThreadId, finalThread);
+    setThreads(threads.map(t => t.id === activeThreadId ? finalThread : t));
+
+  } catch (error) {
+    console.error("Failed to send message:", error);
+    
+    // Specific error messages
+    let errorText = "Sorry, I encountered an error. Please try again.";
+    if (error instanceof Error) {
+      if (error.message.includes('too large') || error.message.includes('payload')) {
+        errorText = "The file or conversation is too large. Try starting a new case or using a smaller file.";
+      } else if (error.message.includes('timeout')) {
+        errorText = "The request timed out. Please try again.";
+      } else if (error.message.includes('process') || error.message.includes('file')) {
+        errorText = error.message;
+      } else if (error.message.includes('Not authenticated') || error.message.includes('401')) {
+        errorText = "Session expired. Please log in again.";
+        setUser(null);
+      } else {
+        errorText = error.message;
+      }
+    }
+    
+    setErrorMessage(errorText);
+    
+    const errorMessage: Message = {
+      role: 'assistant',
+      content: errorText,
+      timestamp: new Date().toISOString(),
     };
     
-    const updatedMessages = [...activeThread.messages, userMessage];
-    const updatedThread = { ...activeThread, messages: updatedMessages };
+    const revertedThread = { 
+      ...updatedThread, 
+      messages: [...updatedMessages, errorMessage]
+    };
+    setThreads(threads.map(t => t.id === activeThreadId ? revertedThread : t));
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-    // Optimistically update UI
-    setThreads(threads.map(t => t.id === activeThreadId ? updatedThread : t));
-    
-    setIsLoading(true);
 
-    try {
-      // Send the actual image to the API
-      const geminiResponse = await processUserTurn(
-        updatedMessages,
-        userInput.trim(),
-        imageBase64,
-        isThinkingMode
-      );
-      
-      const assistantMessage: Message = {
-        role: 'assistant',
-        content: geminiResponse.chatResponse,
-        timestamp: new Date().toISOString(),
-      };
-
-      const finalThread: CaseThread = {
-        ...updatedThread,
-        messages: [...updatedMessages, assistantMessage],
-        summary: geminiResponse.summary,
-        mindMap: geminiResponse.mindMap,
-      };
-
-      await updateThread(activeThreadId, finalThread);
-      setThreads(threads.map(t => t.id === activeThreadId ? finalThread : t));
-
-    } catch (error) {
-      console.error("Failed to send message:", error);
-      
-      // More specific error messages
-      let errorText = "Sorry, I encountered an error. Please try again.";
-      if (error instanceof Error) {
-        if (error.message.includes('too large') || error.message.includes('payload') || error.message.includes('413')) {
-          errorText = "The request is too large. Try starting a new case or using a smaller image.";
-        } else if (error.message.includes('timeout')) {
-          errorText = "The request timed out. Please try again or use a shorter message.";
-        } else if (error.message.includes('compress') || error.message.includes('image')) {
-          errorText = error.message;
-        } else if (error.message.includes('Not authenticated') || error.message.includes('401')) {
-          errorText = "Session expired. Please log in again.";
-          setUser(null);
-        } else {
-          errorText = error.message;
-        }
-      }
-      
-      setErrorMessage(errorText);
-      
-      const errorMessage: Message = {
-        role: 'assistant',
-        content: errorText,
-        timestamp: new Date().toISOString(),
-      };
-      
-      const revertedThread = { ...updatedThread, messages: [...updatedMessages, errorMessage]};
-      setThreads(threads.map(t => t.id === activeThreadId ? revertedThread : t));
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   if (isAuthenticating) {
     return (
