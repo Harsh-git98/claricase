@@ -272,16 +272,16 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
 
         {/* Input Form */}
         <form onSubmit={handleSubmit} className="flex items-end gap-2">
-          <input 
+          {/* <input 
             type="file" 
             ref={fileInputRef} 
             onChange={handleFileAttach} 
             accept="image/*,.pdf,.doc,.docx,.txt" 
             className="hidden" 
             disabled={isProcessingFile || isLoading}
-          />
+          /> */}
 
-          <button 
+          {/* <button 
             type="button" 
             onClick={() => fileInputRef.current?.click()} 
             className="p-2 rounded-full text-slate-500 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -289,7 +289,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
             title="Attach file (images, PDFs, documents)"
           >
             <PaperclipIcon className="w-5 h-5" />
-          </button>
+          </button> */}
 
           <div className="flex-1">
             <textarea
@@ -302,7 +302,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
                 }
               }}
               placeholder="Type your message or upload a file..."
-              className="w-full p-2 border border-slate-800 rounded-lg focus:ring-2 focus:ring-purple-500 resize-none"
+              className="flex-1 h-12 md:h-14 text-base rounded-full px-6 placeholder-black/70 placeholder-font-bold border-2 border-gray-300 outline-none ring-6 ring-primary"
               rows={2}
               disabled={isLoading || isProcessingFile}
             />
@@ -311,17 +311,13 @@ export const ChatView: React.FC<ChatViewProps> = ({ thread, onSendMessage, isLoa
           <button 
             type="submit"
             disabled={isLoading || isProcessingFile || (!userInput.trim() && !attachedFile)}
-            className="p-2 rounded-full bg-purple-600 text-white hover:bg-purple-700 disabled:bg-purple-300 disabled:cursor-not-allowed"
+            className="h-12 md:h-14 px-6 md:px-8 rounded-full bg-primary hover:bg-primary/90 text-white"
             title="Send message"
           >
             <SendIcon className="w-5 h-5" />
           </button>
         </form>
 
-        {/* Supported Formats Info */}
-        <div className="mt-2 text-xs text-gray-500 text-center">
-          Supported: Images (JPG, PNG), PDFs, Word Documents (.doc, .docx), Text files
-        </div>
       </div>
     </div>
   );
