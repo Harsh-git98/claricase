@@ -1,18 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { CaseThread } from '../types';
-import { SendIcon } from './icons/SendIcon';
-import { LogoIcon } from './icons/LogoIcon';
-import { UserIcon } from './icons/UserIcon';
+import React, { useState, useRef, useEffect } from "react";
+import { CaseThread } from "../types";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import {
+  Send,
+  MessageSquare,
+  User
+} from "lucide-react";
 
 interface ChatViewProps {
   thread: CaseThread;
-  onSendMessage: (message: string, imageBase64: string | null, thinking: boolean) => void;
+  onSendMessage: (
+    message: string,
+    imageBase64: string | null,
+    thinking: boolean
+  ) => void;
   isLoading: boolean;
-  onUpdateTitle: (newTitle: string) => void;
-  onClose?: () => void;
-  onSave?: (payload?: any) => void;
 }
 
 export const QuickChatView: React.FC<ChatViewProps> = ({
@@ -20,13 +23,21 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
   onSendMessage,
   isLoading,
 }) => {
+  const [userInput, setUserInput] = useState("");
+  const [attachedImage, setAttachedImage] = useState<{
+    file: File;
+    base64: string;
+  } | null>(null);
 
-  const [userInput, setUserInput] = useState('');
-  const [attachedImage, setAttachedImage] = useState<{ file: File, base64: string } | null>(null);
-  const [isThinkingMode, setIsThinkingMode] = useState(false);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  /* ================= iOS KEYBOARD FIX ================= */
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,105 +47,141 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
     e.preventDefault();
     if (!userInput.trim() && !attachedImage) return;
 
-    let finalMsg = userInput.trim();
-    if (!finalMsg && attachedImage) {
-      finalMsg =
-        attachedImage.file.type === "application/pdf"
-          ? "Analyze this PDF"
-          : "Analyze this image";
-    }
-    onSendMessage(finalMsg, attachedImage?.base64 || null, isThinkingMode);
+    const finalMsg =
+      userInput.trim() ||
+      (attachedImage?.file.type === "application/pdf"
+        ? "Analyze this PDF"
+        : "Analyze this image");
 
-    setUserInput('');
+    onSendMessage(finalMsg, attachedImage?.base64 || null, false);
+
+    setUserInput("");
     setAttachedImage(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
-    <div className="relative flex flex-col h-full bg-gradient-to-br from-white/75 via-purple-100/60 to-white/75
-        backdrop-blur-2xl border border-white/60 shadow-[0_20px_60px_-25px_rgba(109,40,217,0.35)]
-        rounded-[26px] overflow-hidden">
+    <div className="h-[100dvh] w-full bg-gradient-to-br from-purple-50 to-pink-50 p-2 sm:p-4">
+      <div
+        className="
+          relative flex flex-col h-full w-full max-w-4xl mx-auto
+          bg-gradient-to-br from-white/75 via-purple-100/60 to-white/75
+          backdrop-blur-2xl border border-white/60
+          shadow-[0_20px_60px_-25px_rgba(109,40,217,0.35)]
+          rounded-2xl overflow-hidden
+        "
+      >
 
-      {/* Watermark Background */}
-      {thread.messages.length === 0 && (
-        <div className="pointer-events-none select-none absolute inset-0 flex flex-col items-center justify-center opacity-30 -z-10">
-          <LogoIcon className="w-24 h-24 text-slate-300 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-slate-700">Quick Chat</h2>
-          <p className="text-slate-500">Ask questions about any legal topic.</p>
-        </div>
-      )}
-
-      {/* Messages Display */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {thread.messages.map((msg, i) => (
-          <div key={i} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
-            {/* {msg.role === "assistant" && (
-              <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-                <LogoIcon className="w-5 h-5 text-purple-600" />
-              </div>
-            )} */}
-
-            <div
-              className={`max-w-lg p-3 rounded-xl relative z-20 prose prose-sm max-w-none ${
-                msg.role === 'user'
-                  ? 'bg-slate-100 text-gray-800'
-                  : 'bg-purple-600 prose-invert text-white'
-              }`}
-            >
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {msg.content}
-              </ReactMarkdown>
-            </div>
-
-            {msg.role === "user" && (
-              <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center">
-                <UserIcon className="w-5 h-5 text-slate-600" />
-              </div>
-            )}
-          </div>
-        ))}
-
-        {isLoading && (
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-              <LogoIcon className="w-5 h-5 text-purple-600" />
-            </div>
-
-            <div className="max-w-lg p-3 rounded-lg bg-slate-100 text-gray-800">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></div>
-                <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse [animation-delay:0.2s]"></div>
-                <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse [animation-delay:0.4s]"></div>
-              </div>
-            </div>
+        {/* Watermark */}
+        {thread.messages.length === 0 && (
+          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center opacity-30">
+            <MessageSquare className="w-20 h-20 text-slate-300 mb-3" />
+            <h2 className="text-lg font-semibold text-slate-700">
+              Quick Chat
+            </h2>
+            <p className="text-slate-500 text-sm text-center px-4">
+              Ask questions about any legal topic.
+            </p>
           </div>
         )}
 
-        <div ref={messagesEndRef} />
-      </div>
+        {/* Messages */}
+        <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-4">
+          {thread.messages.map((msg, i) => (
+            <div
+              key={i}
+              className={`flex gap-2 ${
+                msg.role === "user" ? "justify-end" : ""
+              }`}
+            >
+              {msg.role === "assistant" && (
+                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <MessageSquare className="w-4 h-4 text-purple-600" />
+                </div>
+              )}
 
-      {/* Input Section */}
-      <form onSubmit={handleSubmit} className="flex items-center space-x-2 p-4 border-t border-white/60 bg-gradient-to-r
-        from-purple-100/80 via-purple-50 to-pink-100/70 backdrop-blur-md z-10">
-        
-        <textarea
-          value={userInput}
-          onChange={e => setUserInput(e.target.value)}
-          placeholder="Ask your legal question…"
-          className="flex-1 p-2 border rounded-lg border-slate-800 focus:ring-2 focus:ring-purple-500
-            focus:border-purple-500 resize-none"
-          rows={3}
-        />
+              <div
+                className={`max-w-[85%] sm:max-w-lg px-4 py-2 rounded-xl text-sm prose prose-sm max-w-none ${
+                  msg.role === "user"
+                    ? "bg-slate-200 text-gray-900"
+                    : "bg-purple-600 text-white prose-invert"
+                }`}
+              >
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {msg.content}
+                </ReactMarkdown>
+              </div>
 
-        <button
-          type="submit"
-          disabled={!userInput.trim()}
-          className="p-2 rounded-full bg-purple-600 text-white hover:bg-purple-700 disabled:bg-purple-300"
+              {msg.role === "user" && (
+                <div className="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center flex-shrink-0">
+                  <User className="w-4 h-4 text-slate-600" />
+                </div>
+              )}
+            </div>
+          ))}
+
+          {isLoading && (
+            <div className="flex gap-2 items-start">
+              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                <MessageSquare className="w-4 h-4 text-purple-600" />
+              </div>
+              <div className="bg-slate-100 px-3 py-2 rounded-lg">
+                <div className="flex gap-1">
+                  <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+                  <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse delay-200" />
+                  <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse delay-400" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Input */}
+        <form
+          onSubmit={handleSubmit}
+          className="
+            border-t border-white/60
+            bg-white/90 backdrop-blur
+            p-2 sm:p-3
+            flex gap-2 items-end
+          "
         >
-          <SendIcon className="w-5 h-5" />
-        </button>
-      </form>
+          <textarea
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit(e);
+              }
+            }}
+            placeholder="Ask your legal question…"
+            rows={1}
+            className="
+              flex-1 min-h-[44px] max-h-[120px]
+              resize-none rounded-full
+              px-4 py-2
+              border-2 border-gray-300
+              focus:ring-2 focus:ring-purple-500
+              text-base
+            "
+          />
 
+          <button
+            type="submit"
+            disabled={!userInput.trim()}
+            className="
+              h-[44px] px-5
+              rounded-full bg-purple-600 text-white
+              flex items-center gap-1
+              disabled:opacity-50
+            "
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
