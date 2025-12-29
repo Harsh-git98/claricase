@@ -30,18 +30,24 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
   } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  /* ================= iOS KEYBOARD FIX ================= */
+  // Removed global body overflow hack; instead handle focus-based scrolling.
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [thread.messages, isLoading]);
+
+  const handleInputFocus = () => {
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    }, 120);
+  };
+
+  const autosize = (el?: HTMLTextAreaElement | null) => {
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,14 +66,14 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
   };
 
   return (
-    <div className="h-[100dvh] w-full bg-gradient-to-br from-purple-50 to-pink-50 p-2 sm:p-4">
+    <div className="h-screen w-full bg-gradient-to-br from-purple-50 to-pink-50 p-2 sm:p-4">
       <div
         className="
           relative flex flex-col h-full w-full max-w-4xl mx-auto
           bg-gradient-to-br from-white/75 via-purple-100/60 to-white/75
           backdrop-blur-2xl border border-white/60
           shadow-[0_20px_60px_-25px_rgba(109,40,217,0.35)]
-          rounded-2xl overflow-hidden
+          rounded-2xl overflow-visible
         "
       >
 
@@ -85,7 +91,7 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
         )}
 
         {/* Messages */}
-        <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-4">
+        <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-4" onClick={() => { /* tap to dismiss keyboard */ }}>
           {thread.messages.map((msg, i) => (
             <div
               key={i}
@@ -148,8 +154,11 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
           "
         >
           <textarea
+            ref={textareaRef}
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
+            onInput={(e) => autosize(e.currentTarget as HTMLTextAreaElement)}
+            onFocus={handleInputFocus}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -159,7 +168,7 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
             placeholder="Ask your legal question…"
             rows={1}
             className="
-              flex-1 min-h-[44px] max-h-[120px]
+              flex-1 min-h-[44px] max-h-[200px]
               resize-none rounded-full
               px-4 py-2
               border-2 border-gray-300

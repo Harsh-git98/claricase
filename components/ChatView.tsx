@@ -50,18 +50,33 @@ export const ChatView: React.FC<ChatViewProps> = ({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  /* ================= iOS FIX ================= */
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
+  /* Removed global body overflow hack — it prevented scrolling on some devices */
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Scroll to bottom when messages change or loading state updates.
+    // Use block: 'end' to ensure the bottom is visible on mobile keyboards.
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [thread.messages, isLoading]);
+
+  // When the input is focused (mobile keyboard opens), ensure messages are scrolled
+  const handleInputFocus = () => {
+    // small delay lets the keyboard resize finish on some mobile browsers
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    }, 120);
+  };
+
+  const autosize = (el?: HTMLTextAreaElement | null) => {
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
+  };
+
+  useEffect(() => {
+    autosize(textareaRef.current);
+  }, [userInput]);
 
   useEffect(() => {
     setTitleInput(thread.title);
@@ -123,8 +138,8 @@ export const ChatView: React.FC<ChatViewProps> = ({
   };
 
   return (
-    <div className="h-[100dvh] w-full bg-gradient-to-br from-purple-50 to-pink-50 p-2 sm:p-4">
-      <div className="relative flex flex-col h-full w-full max-w-5xl mx-auto bg-white/80 backdrop-blur-xl border border-white/60 rounded-2xl shadow-xl overflow-hidden">
+    <div className="h-screen w-full bg-gradient-to-br from-purple-50 to-pink-50 p-2 sm:p-4">
+      <div className="relative flex flex-col h-full w-full max-w-5xl mx-auto bg-white/80 backdrop-blur-xl border border-white/60 rounded-2xl shadow-xl overflow-visible">
         
         {/* Title Bar */}
         <div className="flex items-center gap-2 p-3 border-b bg-white/70">
@@ -157,7 +172,7 @@ export const ChatView: React.FC<ChatViewProps> = ({
         </div>
 
         {/* Messages */}
-        <div className="flex-1 min-h-0 overflow-y-auto p-3 space-y-4">
+        <div className="flex-1 min-h-0 overflow-y-auto p-3 space-y-4" onClick={() => { /* allow tap-to-dismiss keyboard */ }}>
           {thread.messages.map((msg, i) => (
             <div
               key={i}
@@ -201,6 +216,8 @@ export const ChatView: React.FC<ChatViewProps> = ({
 
           <div className="flex gap-2 items-end">
             <textarea
+              ref={textareaRef}
+              onInput={(e) => autosize(e.currentTarget as HTMLTextAreaElement)}
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               onKeyDown={(e) => {
@@ -209,6 +226,7 @@ export const ChatView: React.FC<ChatViewProps> = ({
                   handleSubmit();
                 }
               }}
+              onFocus={handleInputFocus}
               placeholder="Ask about your case…"
               rows={1}
               className="
