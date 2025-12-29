@@ -62,8 +62,8 @@ export const QuickchatWidget: React.FC = () => {
     <>
       {isQuickOpen && quickThread ? (
         <div className="fixed inset-0 z-50 flex items-end justify-center p-6">
-          <div className="max-w-md w-full">
-            <div className="bg-white rounded-2xl shadow-xl border border-white/60 overflow-hidden">
+          <div className="">
+            <div className="bg-white rounded-2xl shadow-xl border border-purple-600/60 overflow-hidden">
               <div className="px-4 py-2 border-b border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <ChatBubbleIcon className="w-6 h-6 text-purple-600" />

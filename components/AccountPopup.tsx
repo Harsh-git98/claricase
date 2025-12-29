@@ -16,53 +16,111 @@ export const AccountPopup: React.FC<AccountPopupProps> = ({ user, onClose }) => 
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 z-50"
+        className="fixed inset-0 z-50 bg-black/40"
         onClick={onClose}
-      ></div>
+      />
 
       {/* Popup */}
-      <div className="fixed top-1/2 left-1/2 z-50 w-80 -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-gray-800">Account Settings</h2>
+      <div className="fixed top-1/2 left-1/2 z-50 w-80 -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b">
+          <h2 className="text-sm font-semibold text-gray-900">Account</h2>
           <button
             onClick={onClose}
-            className="p-1 rounded-md hover:bg-gray-200 text-gray-500"
+            className="p-1 rounded-md hover:bg-gray-100 text-gray-500"
           >
             <XIcon className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="flex flex-col items-center space-y-3">
+        {/* Profile */}
+        <div className="flex flex-col items-center text-center px-6 py-5 space-y-2">
           <img
             src={user.picture}
             alt="profile"
-            className="w-20 h-20 rounded-full shadow"
+            className="w-16 h-16 rounded-full border"
           />
 
-          <p className="text-md font-semibold text-gray-800">{user.name}</p>
-          {user?.pro ? (
-            <span className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full">
-              Pro User
-            </span>
-          ) : (
-            <span className="px-3 py-1 bg-green-200 text-gray-800 text-sm rounded-full">
-              Free User
-            </span>
-          )}
+          <p className="text-sm font-semibold text-gray-900">
+            {user.name}
+          </p>
+          <p className="text-xs text-gray-500">
+            {user.email}
+          </p>
+
+          <span className="mt-2 text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-700">
+            {user.pro ? "ClariCase Unlimited" : "Free Plan"}
+          </span>
         </div>
 
-        <div className="mt-6 space-y-3">
-          <button className="w-full py-2 px-4 bg-gradient-to-r from-indigo-600 via-purple-700 to-purple-500 text-white rounded-lg hover:bg-indigo-700 transition" onClick={() => window.location.href = "mailto:claricase@hotmail.com?subject=Inquiry%20-%20ClariCase%20Professional%20Plan&body=Hello%20ClariCase%20Team,%0D%0A%0D%0AI%20am%20interested%20in%20learning%20more%20about%20the%20Professional%20plan.%20Please%20help%20me%20with%20pricing%20details%20and%20next%20steps.%0D%0A%0D%0AMy%20Details:%0D%0AName:%20%0D%0AOrganization/Law%20Firm:%20%0D%0AUse%20Case:%20(Research,%20Client%20Cases,%20Internal%20Workflows)%0D%0A%0D%0AHow%20soon%20are%20you%20planning%20to%20get%20started?%20(Immediately/This%20Month/Later)%0D%0A%0D%0AThank%20you%2C%0D%0A"}>
-            Contact Sales
+        {/* Actions */}
+        <div className="px-6 pb-6 space-y-3">
+
+          {/* Primary CTA */}
+          {!user.pro ? (
+            <button
+              className="w-full py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition"
+              onClick={() =>
+                (window.location.href =
+                  "mailto:team@claricase.xyz?subject=ClariCase%20Pro%20Plan%20Inquiry")
+              }
+            >
+              Upgrade to Unlimited
+            </button>
+          ) : (
+            <button
+              className="w-full py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition"
+              onClick={() =>
+                (window.location.href =
+                  "mailto:team@claricase.xyz?subject=Billing%20and%20Subscription%20-%20ClariCase")
+              }
+            >
+              Manage Subscription
+            </button>
+          )}
+
+          {/* Secondary actions */}
+          <button
+            className="w-full py-2.5 text-sm text-gray-700 border rounded-lg hover:bg-gray-50 transition"
+            onClick={() =>
+              (window.location.href =
+                "mailto:support@claricase.xyz?subject=Billing%20and%20Invoices%20-%20ClariCase")
+            }
+          >
+            Billing & Invoices
           </button>
 
-          <button className="w-full py-2 px-4 border rounded-lg text-gray-700 hover:bg-gray-100 transition" onClick={() => window.location.href = "mailto:claricase@hotmail.com?subject=Help%20%26%20Support%20-%20ClariCase&body=Hello%20ClariCase%20Team,%0D%0A%0D%0AI%20need%20assistance%20with%20ClariCase.%20Please%20help%20me%20with%20my%20issue.%0D%0A%0D%0AThank%20you%2C%0D%0A"}>
-            Feedback / Support
+          <button
+            className="w-full py-2.5 text-sm text-gray-700 border rounded-lg hover:bg-gray-50 transition"
+            onClick={() =>
+              (window.location.href =
+                "mailto:support@claricase.xyz?subject=Help%20and%20Support%20-%20ClariCase")
+            }
+          >
+            Get Help
           </button>
-          <button className="w-full py-2 px-4 border rounded-lg text-red-700 hover:bg-red-300 transition" onClick={() => window.location.href =
-  "mailto:claricase@hotmail.com?subject=Account%20Deletion%20Request%20-%20ClariCase&body=Hello%20ClariCase%20Team,%0D%0A%0D%0AI%20would%20like%20to%20request%20deletion%20of%20my%20account.%20Please%20help%20me%20with%20the%20process.%0D%0A%0D%0AThank%20you%2C%0D%0A"}>
-            Delete My Account
-          </button>
+
+          {/* Destructive action */}
+          <div className="pt-2">
+            <button
+              className="w-full py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition"
+              onClick={() =>
+                (window.location.href =
+                  "mailto:support@claricase.xyz?subject=Account%20Deletion%20Request%20-%20ClariCase")
+              }
+            >
+              Request Account Deletion
+            </button>
+            <p className="mt-1 text-[11px] text-gray-500 text-center">
+              Your data will be permanently removed in accordance with our privacy policy.
+            </p>
+          </div>
+
+          {/* Trust line */}
+          <p className="pt-3 text-[11px] text-gray-400 text-center">
+            ClariCase never trains AI models on your private datas.
+          </p>
         </div>
       </div>
     </>

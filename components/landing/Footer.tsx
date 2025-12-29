@@ -52,7 +52,7 @@ export const Footer: React.FC = () => {
  >
  About Us
  </a>
- <a href="mailto:claricase@hotmail.com" className="hover:text-purple-600 underline cursor-pointer text-center"
+ <a href="mailto:support@claricase.xyz" className="hover:text-purple-600 underline cursor-pointer text-center"
 >Support/ Help</a>
 </motion.div>
                 

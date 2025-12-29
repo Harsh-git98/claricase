@@ -26,18 +26,16 @@ const plans = [
     badge: "For Students & Quick Checks",
   },
   {
-    name: "Professional",
+    name: "Unlimited",
     price: "$49",
     period: "per month",
     description: "Built for legal teams & ongoing matters",
     features: [
       "Unlimited active cases",
-      "Unlimited document uploads",
       "Advanced case visualizations",
       "Timeline & argument mapping",
       "Evidence relationship insights",
       "24/7 priority support",
-      "API + automation access",
     ],
     cta: "Contact Sales",
     popular: true,
@@ -188,7 +186,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin }) => {
                 handleGoogleLogin();
                 } else {
                 window.location.href = 
-  "mailto:claricase@hotmail.com?subject=Inquiry%20-%20ClariCase%20Professional%20Plan&body=Hello%20ClariCase%20Team,%0D%0A%0D%0AI%20am%20interested%20in%20learning%20more%20about%20the%20Professional%20plan.%20Please%20help%20me%20with%20pricing%20details%20and%20next%20steps.%0D%0A%0D%0AMy%20Details:%0D%0AName:%20%0D%0AOrganization/Law%20Firm:%20%0D%0AUse%20Case:%20(Research,%20Client%20Cases,%20Internal%20Workflows)%0D%0A%0D%0AHow%20soon%20are%20you%20planning%20to%20get%20started?%20(Immediately/This%20Month/Later)%0D%0A%0D%0AThank%20you%2C%0D%0A";
+  "mailto:team@claricase.xyz?subject=Inquiry%20-%20ClariCase%20Professional%20Plan&body=Hello%20ClariCase%20Team,%0D%0A%0D%0AI%20am%20interested%20in%20learning%20more%20about%20the%20Professional%20plan.%20Please%20help%20me%20with%20pricing%20details%20and%20next%20steps.%0D%0A%0D%0AMy%20Details:%0D%0AName:%20%0D%0AOrganization/Law%20Firm:%20%0D%0AUse%20Case:%20(Research,%20Client%20Cases,%20Internal%20Workflows)%0D%0A%0D%0AHow%20soon%20are%20you%20planning%20to%20get%20started?%20(Immediately/This%20Month/Later)%0D%0A%0D%0AThank%20you%2C%0D%0A";
                 }
                 }}
                 whileTap={{ scale: 0.96 }}

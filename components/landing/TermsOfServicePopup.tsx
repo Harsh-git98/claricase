@@ -16,7 +16,7 @@ const termsContent = [
     { title: "12. Termination", content: "We may suspend or terminate accounts for violations of these Terms or for inactivity. Termination does not relieve you of obligations that accrued prior to termination." },
     { title: "13. Governing Law & Dispute Resolution", content: "These Terms are governed by the laws of [Insert jurisdiction — e.g., State of New York, India, etc.]. Disputes will be resolved in the courts or via arbitration as set forth here. (Customize to your company’s preferred governing law and forum.)" },
     { title: "14. Modifications", content: "We may change these Terms; material changes will be posted with notice. Continued use after changes constitutes acceptance." },
-    { title: "15. Contact", content: 'For questions about these Terms, contact us at <a href="mailto:claricase@hotmail.com" class="font-bold underline">claricase@hotmail.com</a>.' }
+    { title: "15. Contact", content: 'For questions about these Terms, contact us at <a href="mailto:team@claricase.xyz" class="font-bold underline">team@claricase.xyz</a>.' }
 ];
 
 export default function TermsOfServicePopup({ onClose }) {
