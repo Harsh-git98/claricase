@@ -15,6 +15,7 @@ import { LogoIcon } from './icons/LogoIcon';
 import { MenuIcon } from './icons/MenuIcon';
 import { XIcon } from './icons/XIcon';
 import { useState } from 'react';
+import { QuickchatWidget } from './QuickchatWidget';
 interface LoginScreenProps {
   onLogin: () => void;
 }
@@ -28,6 +29,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
     window.location.href = `${API_BASE_URL}/auth/google`;
   };
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  
   
   return (
     <div className="bg-slate-50 min-h-screen">
@@ -64,6 +66,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         
       </main>
       <Footer />
+      <QuickchatWidget />
     </div>
   );
 };
