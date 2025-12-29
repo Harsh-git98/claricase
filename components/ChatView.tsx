@@ -138,8 +138,8 @@ export const ChatView: React.FC<ChatViewProps> = ({
   };
 
   return (
-    <div className="h-screen w-full bg-gradient-to-br from-purple-50 to-pink-50 p-2 sm:p-4">
-      <div className="relative flex flex-col h-full w-full max-w-5xl mx-auto bg-white/80 backdrop-blur-xl border border-white/60 rounded-2xl shadow-xl overflow-visible">
+    <div className="h-full w-full bg-gradient-to-br from-purple-50 to-pink-50 p-2 sm:p-4">
+      <div className="relative flex flex-col h-full w-full max-w-5xl mx-auto bg-white/80 backdrop-blur-xl border border-white/60 rounded-2xl shadow-xl overflow-hidden">
         
         {/* Title Bar */}
         <div className="flex items-center gap-2 p-3 border-b bg-white/70">

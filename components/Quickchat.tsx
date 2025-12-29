@@ -16,6 +16,9 @@ interface ChatViewProps {
     thinking: boolean
   ) => void;
   isLoading: boolean;
+  onUpdateTitle?: (newTitle: string) => void;
+  onClose?: () => void;
+  onSave?: (...args: any[]) => void;
 }
 
 export const QuickChatView: React.FC<ChatViewProps> = ({
@@ -66,14 +69,14 @@ export const QuickChatView: React.FC<ChatViewProps> = ({
   };
 
   return (
-    <div className="h-screen w-full bg-gradient-to-br from-purple-50 to-pink-50 p-2 sm:p-4">
+    <div className="h-full w-full bg-gradient-to-br from-purple-50 to-pink-50 p-2 sm:p-4">
       <div
         className="
           relative flex flex-col h-full w-full max-w-4xl mx-auto
           bg-gradient-to-br from-white/75 via-purple-100/60 to-white/75
           backdrop-blur-2xl border border-white/60
           shadow-[0_20px_60px_-25px_rgba(109,40,217,0.35)]
-          rounded-2xl overflow-visible
+          rounded-2xl overflow-hidden
         "
       >
 
