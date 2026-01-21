@@ -11,6 +11,7 @@ import { MobileHeader } from './components/MobileHeader';
 import { QuickChatView } from './components/Quickchat';
 import { NotesPopup } from './components/NotesPopup';
 import { Note } from './types';
+import HarshPortfolio from './components/HarshPortfolio';
 
 import { 
   getNotes, 
@@ -24,6 +25,10 @@ import {
 type MobileView = 'chat' | 'summary' | 'mindmap';
 
 const App: React.FC = () => {
+  // Public route for portfolio
+  if (typeof window !== 'undefined' && window.location.pathname === '/harshranjan') {
+    return <HarshPortfolio />;
+  }
   const [user, setUser] = useState<User | null>(null);
   const [threads, setThreads] = useState<CaseThread[]>([]);
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
