@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { User, CaseThread, Message } from './types';
 import { createThread, updateThread, processUserTurn, checkAuthStatus, logout } from './services/apiService';
 import { LoginScreen } from './components/LoginScreen';
@@ -25,10 +26,6 @@ import {
 type MobileView = 'chat' | 'summary' | 'mindmap';
 
 const App: React.FC = () => {
-  // Public route for portfolio
-  if (typeof window !== 'undefined' && window.location.pathname === '/harshranjan') {
-    return <HarshPortfolio />;
-  }
   const [user, setUser] = useState<User | null>(null);
   const [threads, setThreads] = useState<CaseThread[]>([]);
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
@@ -535,4 +532,13 @@ const handleSendMessage = async (
   );
 };
 
-export default App;
+const RouterApp: React.FC = () => (
+  <HashRouter>
+    <Routes>
+      <Route path="/harshranjan" element={<HarshPortfolio />} />
+      <Route path="/*" element={<App />} />
+    </Routes>
+  </HashRouter>
+);
+
+export default RouterApp;
