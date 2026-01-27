@@ -19,17 +19,21 @@ const termsContent = [
     { title: "15. Contact", content: 'For questions about these Terms, contact us at <a href="mailto:team@claricase.xyz" class="font-bold underline">team@claricase.xyz</a>.' }
 ];
 
-export default function TermsOfServicePopup({ onClose }) {
+export default function TermsOfServicePopup({ onClose, isDark = true }: { onClose?: () => void; isDark?: boolean }) {
+    const cardClass = isDark ? 'bg-slate-800 rounded-lg shadow-2xl w-full max-w-3xl p-6 md:p-8 max-h-[90vh] overflow-y-auto relative space-y-4' : 'bg-white rounded-lg shadow-lg w-full max-w-3xl p-6 md:p-8 max-h-[90vh] overflow-y-auto relative space-y-4';
+    const headingClass = isDark ? 'text-3xl font-bold text-slate-100' : 'text-3xl font-bold text-gray-900';
+    const textClass = isDark ? 'text-slate-300' : 'text-gray-600';
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={onClose}>
             <div
-                className="bg-white rounded-lg shadow-2xl w-full max-w-3xl p-6 md:p-8 max-h-[90vh] overflow-y-auto relative space-y-4"
+                className={cardClass}
                 onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside the card
             >
                 {onClose && (
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition-colors"
+                        className={`absolute top-4 right-4 ${isDark ? 'text-slate-300 hover:text-slate-100' : 'text-gray-600 hover:text-gray-900'} transition-colors`}
                         aria-label="Close"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -38,14 +42,14 @@ export default function TermsOfServicePopup({ onClose }) {
                     </button>
                 )}
 
-                <h1 className="text-3xl font-bold">Terms of Service</h1>
-                <p className="text-sm text-gray-500">Effective date: November 17, 2025</p>
-                <div className="h-0.5 bg-gray-100 my-4"></div>
+                <h1 className={headingClass}>Terms of Service</h1>
+                <p className={`text-sm ${textClass}`}>Effective date: November 17, 2025</p>
+                <div className={isDark ? 'h-0.5 bg-slate-700 my-4' : 'h-0.5 bg-slate-200 my-4'}></div>
 
                 {termsContent.map((section, index) => (
                     <section key={index} className="space-y-2">
-                        <h2 className="text-xl font-semibold">{section.title}</h2>
-                        <p className="text-gray-700" dangerouslySetInnerHTML={{ __html: section.content }}></p>
+                        <h2 className={isDark ? 'text-xl font-semibold text-slate-100' : 'text-xl font-semibold text-gray-900'}>{section.title}</h2>
+                        <p className={isDark ? 'text-slate-200' : 'text-gray-600'} dangerouslySetInnerHTML={{ __html: section.content }}></p>
                     </section>
                 ))}
             </div>

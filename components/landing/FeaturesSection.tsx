@@ -68,9 +68,11 @@ const cardVariants = {
   tap: { scale: 0.995 },
 };
 
-export const FeaturesSection: React.FC = () => {
+interface FeaturesSectionProps { isDark?: boolean }
+export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ isDark = true }) => {
+  const sectionClass = isDark ? 'relative py-24 lg:py-32 bg-slate-900 overflow-hidden' : 'relative py-24 lg:py-32 bg-slate-100 overflow-hidden';
   return (
-    <section className="relative py-24 lg:py-32 bg-white overflow-hidden">
+    <section className={sectionClass}>
       {/* Decorative animated gradient */}
       <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[1200px] h-[700px] rounded-full blur-3xl opacity-30 pointer-events-none"
         style={{
@@ -85,8 +87,8 @@ export const FeaturesSection: React.FC = () => {
 
       <div className="relative container mx-auto px-6 lg:px-12">
         <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-900 leading-tight">Why Choose ClariCase?</h2>
-          <p className="mt-3 max-w-2xl mx-auto text-lg text-gray-600">Everything you need to gain clarity on your legal case, now with immersive visual cues and micro-interactions for faster comprehension.</p>
+          <h2 className={isDark ? 'text-3xl lg:text-4xl font-extrabold text-slate-100 leading-tight' : 'text-3xl lg:text-4xl font-extrabold text-gray-900 leading-tight'}>Why Choose ClariCase?</h2>
+          <p className={isDark ? 'mt-3 max-w-2xl mx-auto text-lg text-slate-300' : 'mt-3 max-w-2xl mx-auto text-lg text-gray-600'}>Everything you need to gain clarity on your legal case, now with immersive visual cues and micro-interactions for faster comprehension.</p>
         </div>
 
         {/* Features grid - motion container */}
@@ -98,7 +100,7 @@ export const FeaturesSection: React.FC = () => {
           viewport={{ once: true, amount: 0.15 }}
         >
           {features.map((f, idx) => (
-            <FeatureCard key={f.name} feature={f} index={idx} />
+            <FeatureCard key={f.name} feature={f} index={idx} isDark={isDark} />
           ))}
         </motion.div>
 
@@ -125,7 +127,7 @@ export const FeaturesSection: React.FC = () => {
   );
 }
 
-function FeatureCard({ feature, index }: { feature: FeatureItem; index: number }) {
+function FeatureCard({ feature, index, isDark }: { feature: FeatureItem; index: number; isDark?: boolean }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [style, setStyle] = useState({ transform: 'perspective(900px) rotateX(0deg) rotateY(0deg) scale(1)' });
   const [isHover, setIsHover] = useState(false);
@@ -166,10 +168,12 @@ function FeatureCard({ feature, index }: { feature: FeatureItem; index: number }
   // motion entrance delay based on index
   const delay = 0.12 * index;
 
+  const darkCard = isDark !== false;
+
   return (
     <motion.div
       ref={ref}
-      className={`card-tilt card-glow relative p-6 rounded-2xl bg-gradient-to-br from-white to-slate-50 shadow-md hover:shadow-2xl border border-transparent`}
+      className={`card-tilt card-glow relative p-6 rounded-2xl ${darkCard ? 'bg-gradient-to-br from-slate-800 to-slate-700 shadow-md hover:shadow-2xl border border-transparent' : 'bg-white shadow-md border border-slate-200'}`}
       variants={cardVariants}
       initial="hidden"
       whileInView="show"
@@ -179,7 +183,7 @@ function FeatureCard({ feature, index }: { feature: FeatureItem; index: number }
       style={{ ...style, transition: 'transform 350ms cubic-bezier(.2,.9,.2,1), box-shadow 250ms ease' }}
     >
       {/* floating icon with ring */}
-      <div className="absolute -top-6 left-6 w-14 h-14 rounded-full bg-white/60 backdrop-blur-md flex items-center justify-center shadow-sm" style={{ transform: 'translateZ(40px)' }}>
+      <div className={darkCard ? 'absolute -top-6 left-6 w-14 h-14 rounded-full bg-white/5 backdrop-blur-md flex items-center justify-center shadow-sm' : 'absolute -top-6 left-6 w-14 h-14 rounded-full bg-white/40 flex items-center justify-center shadow-sm'} style={{ transform: 'translateZ(40px)' }}>
         <motion.div
           className="w-9 h-9 text-purple-600"
           animate={{ y: [0, -6, 0] }}
@@ -192,8 +196,8 @@ function FeatureCard({ feature, index }: { feature: FeatureItem; index: number }
       {/* subtle decorative corner */}
       <div className="absolute -bottom-6 right-6 w-24 h-24 rounded-full opacity-10 pointer-events-none" style={{ background: 'radial-gradient(circle,#7c3aed,transparent 40%)' }} />
 
-      <h3 className="mt-4 text-lg font-semibold text-gray-900 ml-2">{feature.name}</h3>
-      <p className="mt-3 text-sm text-gray-600 ml-2">{feature.description}</p>
+      <h3 className={darkCard ? 'mt-4 text-lg font-semibold text-slate-100 ml-2' : 'mt-4 text-lg font-semibold text-gray-900 ml-2'}>{feature.name}</h3>
+      <p className={darkCard ? 'mt-3 text-sm text-slate-300 ml-2' : 'mt-3 text-sm text-slate-600 ml-2'}>{feature.description}</p>
 
       {/* CTA micro-interaction */}
       {/* <div className="mt-5 ml-2">

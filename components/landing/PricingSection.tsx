@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 
 interface PricingSectionProps {
   onLogin: () => void;
+  isDark?: boolean;
 }
 
 const API_BASE_URL =
@@ -60,13 +61,14 @@ const card = {
   },
 };
 
-export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin }) => {
+export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin, isDark = true }) => {
   const handleGoogleLogin = () => {
     window.location.href = `${API_BASE_URL}/auth/google`;
   };
 
+  const sectionClass = isDark ? 'relative py-20 bg-slate-900 overflow-hidden' : 'relative py-20 bg-white overflow-hidden';
   return (
-    <section className="relative py-20 bg-white overflow-hidden">
+    <section className={sectionClass}>
       {/* Background Glow */}
       {/* <motion.div
         aria-hidden
@@ -84,10 +86,10 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin }) => {
           transition={{ duration: 1 }}
           className="text-center mb-20"
         >
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-gray-900">
+          <h2 className={isDark ? 'text-4xl lg:text-5xl font-extrabold text-slate-100' : 'text-4xl lg:text-5xl font-extrabold text-gray-900'}>
             Simple, Transparent Pricing
           </h2>
-          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className={isDark ? 'mt-4 text-lg text-slate-300 max-w-2xl mx-auto' : 'mt-4 text-lg text-gray-600 max-w-2xl mx-auto'}>
             Choose a plan that fits your legal workflow. Cancel anytime.
           </p>
         </motion.div>
@@ -109,7 +111,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin }) => {
               className={`relative rounded-2xl p-8 transition-all ${
                 plan.popular
                   ? "bg-gradient-to-br from-indigo-600 to-purple-700 text-white shadow-3xl border-2 border-indigo-300 scale-[1.03]"
-                  : "bg-white text-gray-900 shadow-lg border border-gray-200 hover:shadow-2xl"
+                  : (isDark ? "bg-slate-800 text-slate-100 shadow-lg border border-slate-700 hover:shadow-2xl" : "bg-white text-gray-900 shadow-lg border border-slate-200 hover:shadow-2xl")
               }`}
             >
               {/* Popular Badge */}
@@ -117,7 +119,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin }) => {
                 <motion.span
                   className={`absolute -top-4 left-1/2 -translate-x-1/2 text-xs font-semibold px-4 py-1 rounded-full shadow-xl ${
                     plan.popular
-                      ? "bg-white text-indigo-700"
+                      ? (isDark ? "bg-slate-100 text-indigo-700" : "bg-slate-100 text-indigo-700")
                       : "bg-indigo-600 text-white"
                   }`}
                 >
@@ -130,18 +132,11 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin }) => {
                 <div className="mb-2">
                   <span className="text-5xl font-extrabold">{plan.price}</span>
                   <span
-                    className={`text-lg ml-2 ${
-                      plan.popular ? "text-indigo-100" : "text-gray-600"
-                    }`}
-                  >
+                    className={`text-lg ml-2 ${plan.popular ? 'text-indigo-100' : (isDark ? 'text-slate-300' : 'text-gray-600')}`}>
                     /{plan.period}
                   </span>
                 </div>
-                <p
-                  className={`text-sm ${
-                    plan.popular ? "text-purple-100" : "text-gray-600"
-                  }`}
-                >
+                <p className={`text-sm ${plan.popular ? 'text-purple-100' : (isDark ? 'text-slate-300' : 'text-gray-600')}`}>
                   {plan.description}
                 </p>
               </div>
@@ -158,7 +153,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin }) => {
                   >
                     <svg
                       className={`w-5 h-5 mr-3 flex-shrink-0 mt-0.5 ${
-                        plan.popular ? "text-purple-200" : "text-indigo-600"
+                        plan.popular ? "text-purple-200" : "text-indigo-400"
                       }`}
                       fill="currentColor"
                       viewBox="0 0 20 20"
@@ -170,10 +165,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin }) => {
                       />
                     </svg>
                     <span
-                      className={`text-sm ${
-                        plan.popular ? "text-white" : "text-gray-700"
-                      }`}
-                    >
+                      className={`text-sm ${plan.popular ? 'text-white' : (isDark ? 'text-slate-200' : 'text-gray-700')}`}>
                       {feature}
                     </span>
                   </motion.li>
@@ -193,7 +185,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin }) => {
                 whileHover={{ scale: 1.05 }}
                 className={`w-full py-3 px-6 rounded-xl font-semibold text-lg transition-all ${
                   plan.popular
-                    ? "bg-white text-indigo-700 hover:bg-indigo-100 shadow-xl"
+                    ? "bg-slate-100 text-indigo-700 hover:bg-slate-200 shadow-xl"
                     : "bg-gradient-to-r from-indigo-600 via-purple-700 to-purple-500 text-white hover:bg-indigo-700 shadow-md"
                 }`}
               >
@@ -210,7 +202,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin }) => {
 
         {/* Trust Section */}
         <motion.p
-          className="text-center mt-14 text-gray-500 text-sm max-w-2xl mx-auto"
+          className={isDark ? 'text-center mt-14 text-slate-300 text-sm max-w-2xl mx-auto' : 'text-center mt-14 text-gray-600 text-sm max-w-2xl mx-auto'}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}

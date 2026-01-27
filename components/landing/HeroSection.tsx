@@ -3,11 +3,12 @@ import { motion, useMotionValue, useTransform } from "framer-motion";
 
 interface HeroSectionProps {
   onLogin: () => void;
+  isDark?: boolean;
 }
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "https://reprompttserver.onrender.com/lawxora";
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ onLogin }) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ onLogin, isDark = true }) => {
   const handleGoogleLogin = () => {
     window.location.href = `${API_BASE_URL}/auth/google`;
   };
@@ -32,18 +33,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLogin }) => {
       className="relative overflow-hidden pt-36 pb-24 lg:pt-48 lg:pb-32 select-none"
     >
       {/* ---- Background Gradient (Parallax) ---- */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-purple-100"
-        style={{ rotateX, rotateY }}
-        transition={{ type: "spring", stiffness: 40, damping: 20 }}
-      />
+      
 
       {/* ---- Floating Particles ---- */}
       <div className="pointer-events-none absolute inset-0 opacity-40">
         {Array.from({ length: 30 }).map((_, i) => (
           <motion.div
             key={i}
-            className="absolute bg-purple-300/40 rounded-full"
+            className={isDark ? 'absolute bg-purple-300/40 rounded-full' : 'absolute bg-purple-200/30 rounded-full'}
             style={{
               width: Math.random() * 6 + 4 + "px",
               height: Math.random() * 6 + 4 + "px",
@@ -72,7 +69,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLogin }) => {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-5xl lg:text-7xl font-extrabold tracking-tight text-gray-900 relative inline-block"
+          className={isDark ? 'text-5xl lg:text-7xl font-extrabold tracking-tight text-slate-100 relative inline-block' : 'text-5xl lg:text-7xl font-extrabold tracking-tight text-gray-900 relative inline-block'}
         >
           {/* shimmer overlay */}
           <span className="relative z-10 block">
@@ -91,7 +88,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLogin }) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="mt-6 max-w-3xl mx-auto text-lg lg:text-xl text-gray-600 leading-relaxed"
+          className={isDark ? 'mt-6 max-w-3xl mx-auto text-lg lg:text-xl text-slate-300 leading-relaxed' : 'mt-6 max-w-3xl mx-auto text-lg lg:text-xl text-gray-600 leading-relaxed'}
         >
           ClariCase helps you analyze, summarize, and visualize legal documents —
           transforming complex information into clear, actionable understanding.
@@ -123,7 +120,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLogin }) => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.5 }}
-          className="mt-4 text-sm text-gray-500"
+          className={isDark ? 'mt-4 text-sm text-slate-400' : 'mt-4 text-sm text-gray-500'}
         >
           No credit card required.
         </motion.p>

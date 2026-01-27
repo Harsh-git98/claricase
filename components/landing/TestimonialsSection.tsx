@@ -43,9 +43,10 @@ const card = {
   },
 };
 
-export const TestimonialsSection: React.FC = () => {
+export const TestimonialsSection: React.FC<{ isDark?: boolean }> = ({ isDark = true }) => {
+  const sectionClass = isDark ? 'relative py-24 lg:py-32 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 overflow-hidden' : 'relative py-24 lg:py-32 bg-white overflow-hidden';
   return (
-    <section className="relative py-24 lg:py-32 bg-gradient-to-b from-white via-slate-50 to-white overflow-hidden">
+    <section className={sectionClass}>
       {/* Gradient lighting */}
       <div
         className="absolute -top-20 left-1/2 -translate-x-1/2 w-[1000px] h-[650px] rounded-full blur-3xl opacity-30 pointer-events-none"
@@ -67,10 +68,10 @@ export const TestimonialsSection: React.FC = () => {
           viewport={{ once: true }}
           className="text-center mb-20"
         >
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-gray-900">
+          <h2 className={isDark ? 'text-4xl lg:text-5xl font-extrabold text-slate-100' : 'text-4xl lg:text-5xl font-extrabold text-gray-900'}>
             Trusted by People Like You
           </h2>
-          <p className="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className={isDark ? 'mt-3 text-lg text-slate-300 max-w-2xl mx-auto' : 'mt-3 text-lg text-gray-600 max-w-2xl mx-auto'}>
             See how ClariCase has helped others gain clarity and confidence.
           </p>
         </motion.div>
@@ -89,7 +90,7 @@ export const TestimonialsSection: React.FC = () => {
               variants={card}
               whileHover={{ y: -10, scale: 1.02 }}
               transition={{ type: 'spring', stiffness: 200, damping: 16 }}
-              className="relative bg-white p-10 rounded-3xl shadow-lg border border-slate-100 hover:shadow-2xl backdrop-blur-sm"
+              className={isDark ? 'relative bg-slate-800 p-10 rounded-3xl shadow-lg border border-slate-700 hover:shadow-2xl backdrop-blur-sm' : 'relative bg-white p-10 rounded-3xl shadow-lg border border-slate-200 hover:shadow-2xl'}
             >
               {/* subtle glow */}
               <div className="absolute -top-6 right-6 w-20 h-20 bg-purple-400/20 rounded-full blur-2xl" />
@@ -100,13 +101,13 @@ export const TestimonialsSection: React.FC = () => {
                   {t.avatar}
                 </div>
                 <div className="ml-4">
-                  <h4 className="font-semibold text-gray-900 text-lg">{t.author}</h4>
-                  <p className="text-sm text-gray-500">{t.role}</p>
+                  <h4 className={isDark ? 'font-semibold text-slate-100 text-lg' : 'font-semibold text-gray-900 text-lg'}>{t.author}</h4>
+                  <p className={isDark ? 'text-sm text-slate-300' : 'text-sm text-gray-600'}>{t.role}</p>
                 </div>
               </div>
 
               {/* quote */}
-              <p className="text-gray-700 leading-relaxed italic relative z-10">
+              <p className={isDark ? 'text-slate-200 leading-relaxed italic relative z-10' : 'text-gray-800 leading-relaxed italic relative z-10'}>
                 “{t.quote}”
               </p>
 
