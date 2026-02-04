@@ -193,8 +193,10 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onLogin, isDark 
               </motion.button>
 
               {/* Reassurance */}
-              <p className="mt-3 text-xs text-center opacity-75">
-                Cancel anytime · End-to-end encrypted
+                 <p className="mt-3 text-xs text-center opacity-75">
+                Cancel anytime · End-to-end encrypted <br />
+                <a href="/pricing.html" className="mt-3 text-xs text-center opacity-75 ml-auto hover:underline w-full cursor-pointer align-center" style={{ color: isDark ? '#cbd5e1' : '#475569' }} >Know more</a>
+           
               </p>
             </motion.div>
           ))}
