@@ -63,7 +63,7 @@ export const AccountPopup: React.FC<AccountPopupProps> = ({ user, onClose }) => 
               className="w-full py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition"
               onClick={() =>
                 (window.location.href =
-                  "mailto:team@claricase.xyz?subject=ClariCase%20Pro%20Plan%20Inquiry")
+                  "https://www.paypal.com/ncp/payment/A2YEU63SR5HJY")
               }
             >
               Upgrade to Unlimited
@@ -80,17 +80,6 @@ export const AccountPopup: React.FC<AccountPopupProps> = ({ user, onClose }) => 
             </button>
           )}
 
-          {/* Secondary actions */}
-          <button
-            className="w-full py-2.5 text-sm text-gray-700 border rounded-lg hover:bg-gray-50 transition"
-            onClick={() =>
-              (window.location.href =
-                "mailto:support@claricase.xyz?subject=Billing%20and%20Invoices%20-%20ClariCase")
-            }
-          >
-            Billing & Invoices
-          </button>
-
           <button
             className="w-full py-2.5 text-sm text-gray-700 border rounded-lg hover:bg-gray-50 transition"
             onClick={() =>
@@ -98,7 +87,7 @@ export const AccountPopup: React.FC<AccountPopupProps> = ({ user, onClose }) => 
                 "mailto:support@claricase.xyz?subject=Help%20and%20Support%20-%20ClariCase")
             }
           >
-            Get Help
+            Get Help & Support
           </button>
 
           {/* Destructive action */}
@@ -112,7 +101,7 @@ export const AccountPopup: React.FC<AccountPopupProps> = ({ user, onClose }) => 
             >
               Request Account Deletion
             </button>
-            <p className="mt-1 text-[11px] text-gray-500 text-center">
+            <p className="mt-1 text-[7px] text-gray-500 text-center">
               Your data will be permanently removed in accordance with our privacy policy.
             </p>
           </div>
@@ -121,7 +110,7 @@ export const AccountPopup: React.FC<AccountPopupProps> = ({ user, onClose }) => 
           <p className="pt-3 text-[11px] text-gray-400 text-center">
             ClariCase never trains AI models on your private datas.
           </p>
-        </div>
+        </div>6
       </div>
     </>
   );

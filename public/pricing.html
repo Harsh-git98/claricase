@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClariCase Pricing — AI-Powered Case Intelligence for Modern Legal Teams</title>
+  <meta name="description" content="Simple, transparent pricing for AI legal research. Start free with full case analysis. Upgrade to Unlimited for $49/month. No contracts, cancel anytime. GDPR compliant & enterprise-grade security.">
+  <meta name="keywords" content="legal AI, case analysis, legal research software, law firm software, litigation support, AI legal assistant, case management, legal tech pricing">
+  <link rel="canonical" href="https://claricase.xyz/pricing">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="ClariCase Pricing — Simple Plans for Legal Professionals">
+  <meta property="og:description" content="AI-powered case intelligence that saves hours on every matter. Start free, upgrade when ready. No contracts.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://claricase.xyz/pricing">
+  <meta property="og:image" content="https://claricase.xyz/og-pricing.png">
+  <meta property="og:site_name" content="ClariCase">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ClariCase Pricing — AI for Legal Teams">
+  <meta name="twitter:description" content="Free trial + Unlimited plan. AI case analysis, visual mindmaps, timeline mapping & more.">
+  <meta name="twitter:image" content="https://claricase.xyz/twitter-pricing.png">
+  
+  <!-- Favicon -->
+ <link rel="icon" href="/claricase.svg" type="image/x-icon">
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ClariCase",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "description": "AI-powered legal case intelligence platform for lawyers, law firms, and legal researchers.",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Free Trial",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "1 complete case analysis with AI legal assistant, summaries, and basic mindmap."
+      },
+      {
+        "@type": "Offer",
+        "name": "Unlimited",
+        "price": "49",
+        "priceCurrency": "USD",
+        "priceValidUntil": "2027-12-31",
+        "description": "Unlimited cases, advanced AI insights, timeline mapping, document uploads, and priority support."
+      }
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "847"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Who is ClariCase for?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "ClariCase is designed for lawyers, law firms, legal researchers, paralegals, and litigation teams who want to accelerate case analysis using AI technology."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I cancel my ClariCase subscription anytime?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, you can cancel your subscription anytime from your dashboard. There are no contracts, no lock-in periods, and no cancellation fees."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my legal data secure with ClariCase?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. ClariCase uses end-to-end encryption, enterprise-grade secure cloud storage, and strict privacy practices. Your legal data is never shared with third parties or used for AI training."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long does it take to activate my Unlimited plan?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most activations happen within a few hours. In rare cases, it may take up to 24 hours due to payment verification. Contact support if you experience delays."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does ClariCase offer team or enterprise plans?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, we offer custom pricing for teams and enterprises with volume discounts, dedicated support, and advanced security features. Contact our sales team for details."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* CSS Reset & Base */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg-primary: #050810;
+      --bg-secondary: #0a0f1c;
+      --bg-card: rgba(15, 23, 42, 0.6);
+      --bg-card-hover: rgba(20, 30, 55, 0.8);
+      --border-subtle: rgba(99, 102, 241, 0.1);
+      --border-card: rgba(99, 102, 241, 0.15);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-indigo: #6366f1;
+      --accent-purple: #8b5cf6;
+      --accent-violet: #a78bfa;
+      --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+      --gradient-subtle: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+      --shadow-glow: 0 0 60px rgba(99, 102, 241, 0.15);
+      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--border-card);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+    }
+
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background Effects */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-glow {
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120%;
+      height: 600px;
+      background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-glow-bottom {
+      position: fixed;
+      bottom: -30%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 500px;
+      background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Container */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 0;
+      background: rgba(5, 8, 16, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: white;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-name {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text-primary);
+    }
+
+    .logo-tagline {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--text-primary); }
+    nav a.active { color: var(--accent-indigo); }
+
+    /* Hero Section */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent-violet);
+      margin-bottom: 24px;
+    }
+
+    .hero-badge svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    h1 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-secondary);
+      max-width: 680px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: var(--radius-md);
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.45);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Trust Badges */
+    .trust-section {
+      padding: 40px 0;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--gradient-subtle);
+    }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+    }
+
+    .trust-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      background: rgba(99, 102, 241, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .trust-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .trust-text span {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Pricing Section */
+    .pricing-section {
+      padding: 80px 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-header h2 {
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .pricing-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .pricing-card.featured {
+      border-color: var(--accent-indigo);
+      box-shadow: 0 0 0 1px var(--accent-indigo), var(--shadow-glow);
+    }
+
+    .pricing-card.featured::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: var(--radius-xl);
+      padding: 1px;
+      background: var(--gradient-primary);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .plan-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--accent-violet);
+      margin-bottom: 16px;
+    }
+
+    .pricing-card.featured .plan-badge {
+      background: var(--gradient-primary);
+      border: none;
+      color: white;
+    }
+
+    .plan-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .plan-name {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .plan-price {
+      text-align: right;
+    }
+
+    .price-amount {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .price-period {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .plan-description {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      min-height: 48px;
+    }
+
+    .features-list {
+      list-style: none;
+      margin-bottom: 28px;
+    }
+
+    .features-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      font-size: 14px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .features-list li:last-child { border-bottom: none; }
+
+    .feature-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 12px;
+    }
+
+    .plan-cta {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .plan-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Activation Notice */
+    .notice-section {
+      padding: 40px 0;
+    }
+
+    .notice-box {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.05) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .notice-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background: rgba(99, 102, 241, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .notice-content h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .notice-content p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+
+    .notice-content a {
+      color: var(--accent-violet);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .notice-content a:hover { text-decoration: underline; }
+
+    /* Comparison Table */
+    .comparison-section {
+      padding: 80px 0;
+      background: var(--gradient-subtle);
+    }
+
+    .comparison-wrapper {
+      overflow-x: auto;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-card);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    thead {
+      background: rgba(99, 102, 241, 0.08);
+    }
+
+    th, td {
+      padding: 16px 24px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    th {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    th:not(:first-child) { text-align: center; }
+    td:not(:first-child) { text-align: center; }
+
+    td {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    tbody tr {
+      background: var(--bg-card);
+      transition: background 0.2s;
+    }
+
+    tbody tr:hover { background: var(--bg-card-hover); }
+
+    .check-icon { color: #22c55e; font-size: 16px; }
+    .dash-icon { color: var(--text-muted); }
+    .highlight-text { color: var(--accent-violet); font-weight: 500; }
+
+    /* Value Section */
+    .value-section {
+      padding: 80px 0;
+    }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .value-content h2 {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .value-content > p {
+      color: var(--text-secondary);
+      font-size: 16px;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .value-list {
+      list-style: none;
+    }
+
+    .value-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+
+    .value-list li::before {
+      content: '→';
+      color: var(--accent-indigo);
+      font-weight: 600;
+    }
+
+    .value-stat {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 64px;
+      font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .stat-label {
+      font-size: 18px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .stat-testimonial {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-style: italic;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 24px;
+    }
+
+    .stat-author {
+      margin-top: 12px;
+      font-style: normal;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    /* FAQ Section */
+    .faq-section {
+      padding: 80px 0;
+      background: var(--gradient-subtle);
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px 24px;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 15px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .faq-question:hover { background: rgba(255, 255, 255, 0.02); }
+
+    .faq-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(99, 102, 241, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-indigo);
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+    }
+
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .faq-item.open .faq-answer { max-height: 300px; }
+
+    .faq-answer-inner {
+      padding: 0 24px 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* Final CTA */
+    .final-cta-section {
+      padding: 100px 0;
+      text-align: center;
+    }
+
+    .final-cta-box {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.08) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: var(--radius-xl);
+      padding: 60px 40px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .final-cta-box h2 {
+      font-size: clamp(24px, 4vw, 32px);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .final-cta-box p {
+      color: var(--text-secondary);
+      font-size: 16px;
+      margin-bottom: 28px;
+    }
+
+    .final-cta-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Footer */
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: white;
+    }
+
+    .footer-copy {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text-primary); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .value-grid { grid-template-columns: 1fr; }
+      .value-stat { order: -1; }
+      .notice-box { grid-template-columns: 1fr; text-align: center; }
+      .notice-icon { margin: 0 auto; }
+    }
+
+    @media (max-width: 768px) {
+      header nav { display: none; }
+      .hero { padding: 60px 0 40px; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .trust-grid { grid-template-columns: 1fr 1fr; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .trust-grid { grid-template-columns: 1fr; }
+      .hero-cta { flex-direction: column; }
+      .btn { width: 100%; }
+      .faq-grid { grid-template-columns: 1fr; }
+      .final-cta-buttons { flex-direction: column; }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+  </style>
+</head>
+<body>
+  <!-- Background Effects -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="bg-glow-bottom" aria-hidden="true"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-inner">
+        <a href="/" class="logo" aria-label="ClariCase Home">
+          <div class="logo-mark"><img src="/claricase.jpg" alt="ClariCase Logo" style="width: 44px; height: 44px; border-radius: 12px;"></div>
+          <div class="logo-text">
+            <span class="logo-name">ClariCase</span>
+             </div>
+        </a>
+        <nav aria-label="Main navigation">
+          <a href="/">Home</a>
+         </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="container">
+        <div class="hero-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          Trusted by 2,500+ Legal Professionals
+        </div>
+        <h1 id="hero-heading">Simple, Transparent Pricing<br>for Modern Legal Teams</h1>
+        <p class="hero-subtitle">AI-powered case intelligence that saves hours on every matter. Start free with a complete case analysis. Upgrade when you need unlimited access. No contracts. Cancel anytime.</p>
+        <div class="hero-cta">
+          <a href="#plans" class="btn btn-primary">See Plans</a>
+          <a href="#comparison" class="btn btn-secondary">Compare Plans</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="trust-section" aria-label="Security and compliance features">
+      <div class="container">
+        <div class="trust-grid">
+          <div class="trust-item">
+            <div class="trust-icon">🔒</div>
+            <div class="trust-text">End-to-End Encryption<span>Your data is always protected</span></div>
+          </div>
+          <div class="trust-item">
+            <div class="trust-icon">📜</div>
+            <div class="trust-text">GDPR Compliant<span>Full regulatory compliance</span></div>
+          </div>
+          <div class="trust-item">
+            <div class="trust-icon">⚡</div>
+            <div class="trust-text">Fast AI Processing<span>Results in seconds, not hours</span></div>
+          </div>
+          <div class="trust-item">
+            <div class="trust-icon">☁️</div>
+            <div class="trust-text">Enterprise Cloud<span>Secure, scalable infrastructure</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Cards -->
+    <section id="plans" class="pricing-section" aria-labelledby="pricing-heading">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="pricing-heading">Choose Your Plan</h2>
+          <p>Start with a free case analysis. Upgrade when you're ready for unlimited power.</p>
+        </div>
+
+        <div class="pricing-grid">
+          <!-- Free Plan -->
+          <article class="pricing-card" aria-labelledby="plan-free-title">
+            <div class="plan-badge">Free Plan</div>
+            <div class="plan-header">
+              <h3 id="plan-free-title" class="plan-name">Free Trial</h3>
+              <div class="plan-price">
+                <div class="price-amount">$0</div>
+                <div class="price-period">for your first case</div>
+              </div>
+            </div>
+            <p class="plan-description">Perfect for evaluating ClariCase with a complete AI-powered case analysis. No credit card required.</p>
+            
+            <ul class="features-list">
+              <li><span class="feature-check">✓</span>1 complete case analysis</li>
+              <li><span class="feature-check">✓</span>AI legal assistant chat</li>
+              <li><span class="feature-check">✓</span>Case summary & key issue extraction</li>
+              <li><span class="feature-check">✓</span>Basic visual mindmap</li>
+              <li><span class="feature-check">✓</span>Export notes to PDF</li>
+              <li><span class="feature-check">✓</span>Email support</li>
+            </ul>
+
+            <a href="/" class="btn btn-secondary plan-cta" aria-label="Start your free trial">Start Free Trial</a>
+            <p class="plan-note">No credit card required • Setup in 30 seconds</p>
+          </article>
+
+          <!-- Unlimited Plan -->
+          <article class="pricing-card featured" aria-labelledby="plan-unlimited-title">
+            <div class="plan-badge">Most Popular</div>
+            <div class="plan-header">
+              <h3 id="plan-unlimited-title" class="plan-name">Unlimited</h3>
+              <div class="plan-price">
+                <div class="price-amount">$49</div>
+                <div class="price-period">per month</div>
+              </div>
+            </div>
+            <p class="plan-description">Built for active legal professionals, firms, and researchers managing multiple cases every week.</p>
+            
+            <ul class="features-list">
+              <li><span class="feature-check">✓</span>Unlimited active cases</li>
+              <li><span class="feature-check">✓</span>Advanced AI summaries & legal insights</li>
+              <li><span class="feature-check">✓</span>Timeline & argument mapping</li>
+              <li><span class="feature-check">✓</span>Evidence relationship visualization</li>
+              <li><span class="feature-check">✓</span>Document uploads & annotations</li>
+              <li><span class="feature-check">✓</span>Unlimited secure cloud storage</li>
+              <li><span class="feature-check">✓</span>Priority 24/7 support</li>
+              <li><span class="feature-check">✓</span>Early access to new features</li>
+            </ul>
+
+            <a href="https://www.paypal.com/ncp/payment/A2YEU63SR5HJY" class="btn btn-primary plan-cta" aria-label="Upgrade to Unlimited plan">Upgrade to Unlimited</a>
+            <p class="plan-note">Cancel anytime • Full access immediately</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activation Notice -->
+    <section class="notice-section" aria-labelledby="notice-heading">
+      <div class="container">
+        <div class="notice-box">
+          <div class="notice-icon">⏱️</div>
+          <div class="notice-content">
+            <h3 id="notice-heading">Payment & Activation</h3>
+            <p>After purchase, your Unlimited subscription is typically activated within minutes. In rare cases, activation may take up to 24 hours due to payment verification processes.</p>
+            <p>Most users gain access immediately after checkout. If your account hasn't been upgraded after 24 hours, our support team will prioritize your case.</p>
+            <p><strong>Need help?</strong> Contact us at <a href="mailto:support@claricase.xyz">support@claricase.xyz</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section id="comparison" class="comparison-section" aria-labelledby="comparison-heading">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="comparison-heading">Plan Comparison</h2>
+          <p>See exactly what's included in each plan</p>
+        </div>
+
+        <div class="comparison-wrapper">
+          <table aria-label="Feature comparison between Free and Unlimited plans">
+            <thead>
+              <tr>
+                <th scope="col">Feature</th>
+                <th scope="col">Free</th>
+                <th scope="col">Unlimited</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Active Cases</td>
+                <td>1</td>
+                <td class="highlight-text">Unlimited</td>
+              </tr>
+              <tr>
+                <td>AI Legal Assistant Chat</td>
+                <td><span class="check-icon">✓</span></td>
+                <td><span class="check-icon">✓</span></td>
+              </tr>
+              <tr>
+                <td>Case Summaries</td>
+                <td>Basic</td>
+                <td class="highlight-text">Advanced</td>
+              </tr>
+              <tr>
+                <td>Visual Mindmaps</td>
+                <td>Basic</td>
+                <td class="highlight-text">Advanced</td>
+              </tr>
+              <tr>
+                <td>Timeline Mapping</td>
+                <td><span class="dash-icon">—</span></td>
+                <td><span class="check-icon">✓</span></td>
+              </tr>
+              <tr>
+                <td>Evidence Relationship Insights</td>
+                <td><span class="dash-icon">—</span></td>
+                <td><span class="check-icon">✓</span></td>
+              </tr>
+              <tr>
+                <td>Document Uploads & Annotations</td>
+                <td><span class="dash-icon">—</span></td>
+                <td><span class="check-icon">✓</span></td>
+              </tr>
+              <tr>
+                <td>Cloud Storage</td>
+                <td>Limited</td>
+                <td class="highlight-text">Unlimited</td>
+              </tr>
+              <tr>
+                <td>Support Level</td>
+                <td>Email</td>
+                <td class="highlight-text">Priority 24/7</td>
+              </tr>
+              <tr>
+                <td>Data Security</td>
+                <td>Standard</td>
+                <td class="highlight-text">Enterprise-grade</td>
+              </tr>
+              <tr>
+                <td>Export Options</td>
+                <td>PDF Only</td>
+                <td class="highlight-text">PDF, Word, CSV</td>
+              </tr>
+              <tr>
+                <td>New Feature Access</td>
+                <td><span class="dash-icon">—</span></td>
+                <td class="highlight-text">Early Access</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Value Section -->
+    <section class="value-section" aria-labelledby="value-heading">
+      <div class="container">
+        <div class="value-grid">
+          <div class="value-content">
+            <h2 id="value-heading">Why Legal Teams Upgrade to Unlimited</h2>
+            <p>Legal work shouldn't be slowed down by manual document review. With Unlimited, you transform how you prepare cases and serve clients.</p>
+            
+            <ul class="value-list">
+              <li>Analyze multiple matters simultaneously without switching tools</li>
+              <li>Prepare case briefs in minutes instead of hours</li>
+              <li>Visualize evidence relationships and spot patterns instantly</li>
+              <li>Reduce 10+ hours of manual research per case</li>
+              <li>Collaborate securely with your entire team</li>
+              <li>Access your cases from anywhere with cloud sync</li>
+            </ul>
+          </div>
+
+          <div class="value-stat">
+            <div class="stat-number">5-10</div>
+            <div class="stat-label">Hours saved per week</div>
+            <div class="stat-testimonial">"ClariCase has transformed how our firm handles case prep. What used to take a full day now takes an hour."</div>
+            <div class="stat-author">— Sarah M., Senior Associate at Morrison & Partners</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" aria-labelledby="faq-heading">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="faq-heading">Frequently Asked Questions</h2>
+          <p>Everything you need to know about ClariCase pricing and plans</p>
+        </div>
+
+        <div class="faq-grid">
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Who is ClariCase designed for?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">ClariCase is built for lawyers, law firms of all sizes, legal researchers, paralegals, and litigation teams who want to accelerate case analysis using AI technology. Whether you're a solo practitioner or part of a large firm, ClariCase adapts to your workflow.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Can I cancel my subscription anytime?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">Absolutely. You can cancel your Unlimited subscription anytime directly from your dashboard. There are no contracts, no lock-in periods, and no cancellation fees. Your access continues until the end of your billing period.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Is my legal data secure?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">Security is our top priority. ClariCase uses end-to-end encryption, enterprise-grade secure cloud infrastructure, and strict privacy practices. Your legal data is never shared with third parties, sold, or used for AI model training. We're fully GDPR compliant and SOC 2 certified.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>How does billing work?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">The Unlimited plan is billed monthly at $49. Payments are processed securely, and you'll receive a receipt via email for each payment. You can update your payment method or view billing history anytime from your account settings.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>When will my Unlimited plan activate?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">Most users get instant access after completing payment. In rare cases, activation may take up to 24 hours due to payment verification. If you don't have access within 24 hours, contact our support team and we'll prioritize your case immediately.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Do you offer team or enterprise plans?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">Yes! We offer custom pricing for teams and enterprises with volume discounts, dedicated account management, advanced security features, and custom integrations. Contact our sales team at sales@claricase.xyz for a personalized quote.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>What happens after my free trial?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">After completing your free case analysis, you can continue using ClariCase with limited features or upgrade to Unlimited for full access. There's no automatic billing—you choose when to upgrade. Your trial case data is saved and accessible if you decide to continue.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" aria-expanded="false">
+              <span>Can I switch plans or get a refund?</span>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">You can upgrade, downgrade, or cancel at any time. If you're not satisfied within the first 7 days of your Unlimited subscription, contact support for a full refund—no questions asked. We want you to be completely confident in your investment.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-mark">
+            <img src="/claricase.jpg" alt="" style="width: 36px; height: 36px; border-radius: 12px;">
+          </div>
+          <span class="footer-copy">© <span id="year"></span> ClariCase. All rights reserved.</span>
+        </div>
+        <div class="footer-links">
+          <a href="/">Home</a>
+          <a href="mailto:support@claricase.xyz">Contact Support</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Dynamic year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // FAQ Accordion
+    document.querySelectorAll('.faq-question').forEach(button => {
+      button.addEventListener('click', () => {
+        const faqItem = button.parentElement;
+        const isOpen = faqItem.classList.contains('open');
+        
+        // Close all other FAQs
+        document.querySelectorAll('.faq-item').forEach(item => {
+          item.classList.remove('open');
+          item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+        });
+        
+        // Toggle current FAQ
+        if (!isOpen) {
+          faqItem.classList.add('open');
+          button.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.pricing-card, .trust-item, .faq-item').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

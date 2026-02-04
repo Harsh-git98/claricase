@@ -1,77 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
   <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-60R51Q4GF7"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-60R51Q4GF7');
-</script>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+    <link rel="preconnect" href="https://aistudiocdn.com" />
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-60R51Q4GF7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-60R51Q4GF7');
+    </script>
 
     <meta charset="UTF-8" />
-
-    <!-- Mobile + Responsiveness -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Primary SEO Meta Tags -->
-    <title>ClariCase AI</title>
+    <title>Legal Case Summarizer AI & Evidence Mind Maps | ClariCase</title>
+    
     <meta
       name="description"
-      content="ClariCase helps you instantly understand legal cases using AI. Get case summaries, visual mind maps, and evidence insights effortlessly."
+      content="The best AI legal assistant for US lawyers and law students. Instantly summarize case law, generate evidence mind maps, and analyze complex litigation documents with ClariCase."
     />
+    
     <meta
       name="keywords"
-      content="legal AI, case summary AI, AI legal assistant, lawyer tools, evidence analysis, legal case summarizer, law technology"
+      content="legal case summarizer, AI legal assistant, evidence mind mapping, case law analysis, litigation support software, 1L study tools, summarize legal PDFs, legal tech US"
     />
-    <meta name="author" content="ClariCase" />
-    <meta name="robots" content="index, follow" />
 
-    <!-- Canonical URL (must have trailing slash for SPA SEO) -->
+    <meta name="author" content="ClariCase AI" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
     <link rel="canonical" href="https://www.claricase.xyz/" />
 
-    <!-- Open Graph (Facebook / LinkedIn / WhatsApp) -->
-    <meta property="og:title" content="ClariCase – AI Legal Assistant" />
+    <meta property="og:site_name" content="ClariCase AI" />
+    <meta property="og:title" content="ClariCase: Summarize Legal Cases in Seconds" />
     <meta
       property="og:description"
-      content="Instant case insights, summaries, and evidence clarity powered by AI."
+      content="Turn complex legal documents into clear summaries and visual mind maps. The ultimate AI tool for litigation prep and law school."
     />
-    <!-- IMPORTANT: OG images CANNOT be SVG -->
     <meta
       property="og:image"
       content="https://www.claricase.xyz/claricase.jpg"
     />
+    <meta property="og:image:alt" content="ClariCase AI Dashboard showing a legal mind map" />
     <meta property="og:url" content="https://www.claricase.xyz/" />
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="ClariCase - AI Legal Assistant" />
     <meta
       name="twitter:description"
-      content="Understand legal cases faster with AI-powered summaries and visual mind maps."
+      content="Understand legal cases faster. AI-powered summaries and evidence visualization for modern lawyers."
     />
     <meta
       name="twitter:image"
       content="https://www.claricase.xyz/claricase.jpg"
     />
 
-    <!-- Performance & Aesthetic -->
-    <meta name="theme-color" content="#000000" />
-    <link rel="icon" href="/claricase.jpg" />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="icon" type="image/jpeg" href="/claricase.jpg" />
 
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "ClariCase AI",
+      "operatingSystem": "Web, iOS, Android",
+      "applicationCategory": "LegalApplication",
+      "description": "AI-powered legal case summarizer and visual mind mapping tool for lawyers, attorneys, and law students.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "category": "Free Tier Available"
+      },
+      "featureList": [
+        "Instant Case Summaries",
+        "Evidence Mind Mapping",
+        "Litigation Analysis",
+        "Legal Document Parsing"
+      ],
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Lawyers, Law Students, Paralegals"
+      }
+    }
+    </script>
 
     <style>
       body {
         overscroll-behavior: none;
+        background-color: #f8fafc; /* Matches bg-slate-50 to prevent white flash */
+      }
+      /* Ensure fallback content looks decent if JS fails */
+      #seo-fallback {
+        font-family: system-ui, -apple-system, sans-serif;
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+        color: #334155;
       }
     </style>
+    <script 
+  src="https://www.paypal.com/sdk/js?client-id=BAA4DpD2sTBGIuKorT6DcGvAYC7oj9Hh40TmGVCcJKQofRJJJg9VNtG-oSJxdrxUZgNah2J4iKoSuIFA6U&components=hosted-buttons&disable-funding=venmo&currency=USD">
+</script>
 
-    <!-- Import Map (React 19 + D3 + Google GenAI) -->
     <script type="importmap">
       {
         "imports": {
@@ -85,10 +121,31 @@
     </script>
   </head>
 
-  <body class="bg-slate-50 text-gray-800">
-    <div id="root"></div>
+  <body class="bg-slate-50 text-gray-800 antialiased">
+    
+    <div id="root">
+      <div id="seo-fallback">
+        <header style="color: #fdfdfd;">
+          <h1>ClariCase AI: The Ultimate Legal Case Summarizer</h1>
+          <p>
+            Welcome to <strong>ClariCase</strong>, the premier <em>AI legal assistant</em> designed to help US lawyers, paralegals, and law students understand complex litigation faster.
+          </p>
+        </header>
+        
+        <main>
+          <h2 style="color: #f8fafc;">Why Use ClariCase for Legal Research?</h2>
+          <ul style="color: #f8fafc;">
+            <li><strong>Instant Summaries:</strong> Upload any case law PDF and get a comprehensive summary in seconds.</li>
+            <li><strong>Visual Mind Maps:</strong> See the connections between evidence, rulings, and precedents visually.</li>
+            <li><strong>Litigation Support:</strong> Perfect for analyzing discovery documents and preparing for trial.</li>
+          </ul>
+          
+          <h2 style="color: #f8fafc;">Features</h2>
+          <p style="color: #f8fafc;">Whether you are a 1L law student studying for finals or an attorney preparing a brief, ClariCase organizes your legal documents into clear, actionable insights.</p>
+        </main>
+      </div>
+    </div>
 
-    <!-- Main App -->
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
